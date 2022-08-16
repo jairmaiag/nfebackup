@@ -1,13 +1,14 @@
-var inspect = require("util").inspect;
+const config = require('dotenv');
+config();
 var fs = require("fs");
 var { Base64Encode } = require("base64-stream");
 var quotedPrintable = require("quoted-printable");
 var Imap = require("imap");
 var imap = new Imap({
-	user: "nfe@scriptcode.com.br",
-	password: "Scr1ptC0de@nfe",
-	host: "mail.scriptcode.com.br",
-	port: 993,
+	user:  process.env.EMAIL,
+	password: process.env.SENHA_EMAIL,
+	host: process.env.HOST_EMAIL,
+	port: process.env.PORT_EMAIL,
 	tls: true,
 	debug: function (msg) {
 		console.log("Debug do imap:", msg);
