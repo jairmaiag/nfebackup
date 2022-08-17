@@ -38,4 +38,4 @@ Após baixar os fontes acesse a pasta da aplicação e execute o comando:
 Utilize o **npm** para executar o mesmo com um dos comandos abaixo:
 
 1. npm start
-2. npm run nodemon
+2. npm run dev
