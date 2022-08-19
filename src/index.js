@@ -1,5 +1,6 @@
 require('dotenv/config');
 const imap = require('./app/imapConfig');
+const Util = require("./app/Util");
 
 imap.once("ready", function () {
 	imap.openBox("INBOX", true, function (err, box) {
@@ -32,49 +33,27 @@ imap.once("ready", function () {
 						});
 					});
 					msg.once("attributes", function (attrs) {
-						var attachments = findAttachmentParts(attrs.struct);
-						console.log(prefix + "Has attachments: %d", attachments.length);
-						for (var i = 0, len = attachments.length; i < len; ++i) {
-							var attachment = attachments[i];
-							/*This is how each attachment looks like {
-              partID: '2',
-              type: 'application',
-              subtype: 'octet-stream',
-              params: { name: 'file-name.ext' },
-              id: null,
-              description: null,
-              encoding: 'BASE64',
-              size: 44952,
-              md5: null,
-              disposition: { type: 'ATTACHMENT', params: { filename: 'file-name.ext' } },
-              language: null
-            }
-          */
-							//            console.log('attachment',attachment);
+						const attachments = Util.findAttachmentParts(attrs.struct);
+						attachments.forEach(attachment => {
 							if (
 								attachment.type === "application" &&
 								attachment.subtype === "xml"
 							) {
-								console.log(
-									prefix + "Fetching attachment %s",
-									attachment.params.name
-								);
-								var f = imap.fetch(attrs.uid, {
-									//do not use imap.seq.fetch here
+								const fetch = imap.fetch(attrs.uid, {
 									bodies: [attachment.partID],
 									struct: true,
 								});
-								//build function to process attachment message
-								f.on("message", buildAttMessageFunction(attachment));
+								fetch.on("message", Util.buildAttMessageFunction(attachment));
 							}
-						}
+							
+						});
 					});
 					msg.once("end", function () {
 						console.log(prefix + "Finished email");
 					});
 				});
 				f.once("error", function (err) {
-					console.log("Fetch error: " + err);
+					console.error("Fetch error: " + err);
 				});
 				f.once("end", function () {
 					console.log("Done fetching all messages!");
@@ -85,12 +64,6 @@ imap.once("ready", function () {
 	});
 });
 
-imap.once("error", function (err) {
-	console.log(err);
-});
-
-imap.once("end", function () {
-	console.log("Connection ended");
-});
-
+imap.once("error", err => console.error);
+imap.once("end", () => console.log("Connection ended"));
 imap.connect();

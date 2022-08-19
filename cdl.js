@@ -1,4 +1,4 @@
-const config = require('dotenv');
+const { config } = require('dotenv');
 config();
 var fs = require("fs");
 var { Base64Encode } = require("base64-stream");
@@ -10,8 +10,11 @@ var imap = new Imap({
 	host: process.env.HOST_EMAIL,
 	port: process.env.PORT_EMAIL,
 	tls: true,
+	tlsOptions: {
+		rejectUnauthorized: false,
+	},
 	debug: function (msg) {
-		console.log("Debug do imap:", msg);
+		console.error("Debug do imap:", msg);
 	},
 });
 
@@ -65,22 +68,6 @@ function buildAttMessageFunction(attachment) {
 					console.log("The file has been saved!");
 				});
 			});
-
-			// writeStream.on("finish", function () {
-			// 	console.log(prefix + "Done writing to file %s", filename);
-			// });
-
-			// //stream.pipe(writeStream); this would write base64 data to the file.
-			// //so we decode during streaming using
-			// if (toUpper(encoding) === "BASE64") {
-			// 	//the stream is base64 encoded, so here the stream is decode on the fly and piped to the write stream (file)
-			// 	console.log("Decodificando Base64 =>", filename);
-			// 	stream.pipe(new Base64Encode()).pipe(writeStream);
-			// } else {
-			// 	//here we have none or some other decoding streamed directly to the file which renders it useless probably
-			// 	console.log("Decodificando Normal =>", encoding);
-			// 	stream.pipe(writeStream);
-			// }
 		});
 		msg.once("end", function () {
 			console.log(prefix + "Finished attachment %s", filename);
@@ -102,12 +89,11 @@ imap.once("ready", function () {
 					struct: true,
 				});
 				f.on("message", function (msg, seqno) {
-					// console.log("Message #%d", seqno);
 					console.log("Message #%d", seqno);
 
-					var prefix = "(#" + seqno + ") ";
+					const prefix = `(# ${seqno}) `;
 					msg.on("body", function (stream, info) {
-						var buffer = "";
+						let buffer = "";
 						stream.on("data", function (chunk) {
 							buffer += chunk.toString("utf8");
 						});
@@ -119,10 +105,10 @@ imap.once("ready", function () {
 						});
 					});
 					msg.once("attributes", function (attrs) {
-						var attachments = findAttachmentParts(attrs.struct);
+						const attachments = findAttachmentParts(attrs.struct);
 						console.log(prefix + "Has attachments: %d", attachments.length);
-						for (var i = 0, len = attachments.length; i < len; ++i) {
-							var attachment = attachments[i];
+						attachments.forEach(attachment => {
+							console.log('attachment =>', attachment);
 							/*This is how each attachment looks like {
               partID: '2',
               type: 'application',
@@ -139,13 +125,10 @@ imap.once("ready", function () {
           */
 							//            console.log('attachment',attachment);
 							if (
-								attachment.type === "application" &&
+								attachment.type === "text" &&
 								attachment.subtype === "xml"
 							) {
-								console.log(
-									prefix + "Fetching attachment %s",
-									attachment.params.name
-								);
+								console.log(`${prefix} Fetching attachment ${attachment.params.name}`);
 								var f = imap.fetch(attrs.uid, {
 									//do not use imap.seq.fetch here
 									bodies: [attachment.partID],
@@ -154,7 +137,7 @@ imap.once("ready", function () {
 								//build function to process attachment message
 								f.on("message", buildAttMessageFunction(attachment));
 							}
-						}
+						});
 					});
 					msg.once("end", function () {
 						console.log(prefix + "Finished email");
