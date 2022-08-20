@@ -1,6 +1,17 @@
 require('dotenv/config');
+const Imap = require("imap");
 const imap = require('./app/imapConfig');
 const Util = require("./app/Util");
+
+/* Captura da passgem de parâmetros via linha de comando */
+const param = process.argv;
+if(param.length > 2){
+  const modo = param[2];
+  if(modo === 'production'){
+    process.env.NODE_ENV = 'production';
+  }
+}
+
 
 imap.once("ready", function () {
 	imap.openBox("INBOX", true, function (err, box) {
@@ -11,32 +22,31 @@ imap.once("ready", function () {
 			function (err, results) {
 				if (err) throw err;
 
-				var f = imap.fetch("*", {
+				const f = imap.fetch("*", {
 					bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
 					struct: true,
 				});
 				f.on("message", function (msg, seqno) {
 					// console.log("Message #%d", seqno);
-					console.log("Message #%d", seqno);
 
-					var prefix = "(#" + seqno + ") ";
+					const prefix = "(#" + seqno + ") ";
 					msg.on("body", function (stream, info) {
-						var buffer = "";
+						let buffer = "";
 						stream.on("data", function (chunk) {
 							buffer += chunk.toString("utf8");
 						});
 						stream.once("end", function () {
-							console.log(
-								prefix + "Parsed header: %s",
-								Imap.parseHeader(buffer)
-							);
+							// console.log(
+							// 	prefix + "Parsed header: %s",
+							// 	Imap.parseHeader(buffer)
+							// );
 						});
 					});
 					msg.once("attributes", function (attrs) {
 						const attachments = Util.findAttachmentParts(attrs.struct);
 						attachments.forEach(attachment => {
 							if (
-								attachment.type === "application" &&
+								attachment.type === "text" &&
 								attachment.subtype === "xml"
 							) {
 								const fetch = imap.fetch(attrs.uid, {
@@ -49,14 +59,14 @@ imap.once("ready", function () {
 						});
 					});
 					msg.once("end", function () {
-						console.log(prefix + "Finished email");
+						// console.log(prefix + "Finished email");
 					});
 				});
 				f.once("error", function (err) {
 					console.error("Fetch error: " + err);
 				});
 				f.once("end", function () {
-					console.log("Done fetching all messages!");
+					// console.log("Done fetching all messages!");
 					imap.end();
 				});
 			}

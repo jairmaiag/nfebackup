@@ -1,12 +1,11 @@
+const fs = require("fs");
 const { config } = require('dotenv');
 const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
-
 config();
-var fs = require("fs");
-var { Base64Encode } = require("base64-stream");
-var quotedPrintable = require("quoted-printable");
-var Imap = require("imap");
-var imap = new Imap({
+const { Base64Encode } = require("base64-stream");
+const quotedPrintable = require("quoted-printable");
+const Imap = require("imap");
+const imap = new Imap({
 	user:  process.env.EMAIL,
 	password: process.env.SENHA_EMAIL,
 	host: process.env.HOST_EMAIL,
@@ -54,8 +53,6 @@ function findAttachmentParts(structs, attachments) {
 
 function buildAttMessageFunction(attachment) {
 	var filename = attachment.params.name;
-	var encoding = attachment.encoding;
-
 	return function (msg, seqno) {
 		var prefix = "(#" + seqno + ") ";
 		msg.on("body", function (stream, info) {

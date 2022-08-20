@@ -5,8 +5,13 @@ const imap = new Imap({
 	host: process.env.HOST_EMAIL,
 	port: process.env.PORT_EMAIL,
 	tls: true,
+	tlsOptions: {
+		rejectUnauthorized: false,
+	},
 	debug: function (msg) {
-		console.log("Debug do imap:", msg);
+		if(process.env.NODE_ENV === 'development'){
+			console.error("Debug do imap:", msg);
+		}
 	},
 });
 module.exports = imap;

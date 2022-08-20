@@ -1,11 +1,13 @@
 const fs = require("fs");
+const quotedPrintable = require("quoted-printable");
+const { XMLParser } = require('fast-xml-parser');
 
 class Util {
     toUpper(thing) {
         return thing && thing.toUpperCase ? thing.toUpperCase() : thing;
     }
     
-    async streamToString(stream) {
+    static async streamToString(stream) {
         const chunks = [];
         return new Promise((resolve, reject) => {
             stream.on("data", (chunk) => chunks.push(Buffer.from(chunk)));
@@ -21,38 +23,52 @@ class Util {
         return arrayFiltro.indexOf(this.toUpper(struct.disposition.type)) > -1;
     }
 
-    findAttachmentParts(struct, attachments) {
+    findAttachmentParts(structs, attachments) {
         attachments = attachments || [];
-        if(struct.length === 0 ) {
-            return attachments;
-        }
-        struct.forEach(struc => {
-            if (Array.isArray(struc)) {
-                this.findAttachmentParts(struc, attachments);
-            }else if(this.validStruct(struc)) {
-                attachments.push(struc);
+        structs.forEach(struct => {
+            if (Array.isArray(struct)) {
+                this.findAttachmentParts(struct, attachments);
+            } else {
+                if (
+                    struct.disposition && (
+                        ["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1 ||
+                        ["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1)
+                ) {
+                    attachments.push(struct);
+                }
             }
+    
         });
         return attachments;
     }
-
     buildAttMessageFunction(attachment) {
         const filename = attachment.params.name;
         return function (msg, seqno) {
-            const prefix = `(#${seqno}) `;
+            const prefix = "(#" + seqno + ") ";
             msg.on("body", function (stream, info) {
-                this.streamToString(stream).then((result) => {
-                    fs.writeFile(filename, quotedPrintable.decode(result), (err) => {
+                Util.streamToString(stream).then(result => {
+                    const context = quotedPrintable.decode(result);
+                    const parser = new XMLParser();
+                    const jsonObj = parser.parse(context);
+                    const cnpjEmitente = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
+                    const pastaNfe = `${process.env.PWD}/nFe`
+                    if (!fs.existsSync(pastaNfe)){
+                        fs.mkdirSync(pastaNfe);
+                    }
+                    const pasta = `${pastaNfe}/${cnpjEmitente}`;
+                    if (!fs.existsSync(pasta)){
+                        fs.mkdirSync(pasta);
+                    }
+                    fs.writeFile(`${pasta}/${filename}`, context, (err) => {
                         if (err) throw err;
-                        console.log("The file has been saved!");
+                        // console.err("The file has been saved!");
                     });
                 });
             });
             msg.once("end", function () {
-                console.log(prefix + "Finished attachment %s", filename);
+                // console.log(prefix + "Finished attachment %s", filename);
             });
         };
-    }
-    
+    }    
 }
 module.exports = new Util();
