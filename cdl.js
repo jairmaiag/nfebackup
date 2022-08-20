@@ -1,4 +1,6 @@
 const { config } = require('dotenv');
+const {XMLParser, XMLBuilder, XMLValidator} = require('fast-xml-parser');
+
 config();
 var fs = require("fs");
 var { Base64Encode } = require("base64-stream");
@@ -31,24 +33,22 @@ function toUpper(thing) {
 	return thing && thing.toUpperCase ? thing.toUpperCase() : thing;
 }
 
-function findAttachmentParts(struct, attachments) {
+function findAttachmentParts(structs, attachments) {
 	attachments = attachments || [];
-	for (var i = 0, len = struct.length, r; i < len; ++i) {
-		if (Array.isArray(struct[i])) {
-			findAttachmentParts(struct[i], attachments);
+	structs.forEach(struct => {
+		if (Array.isArray(struct)) {
+			findAttachmentParts(struct, attachments);
 		} else {
 			if (
-				struct[i].disposition &&
-				(["INLINE", "ATTACHMENT"].indexOf(toUpper(struct[i].disposition.type)) >
-					-1 ||
-					["INLINE", "ATTACHMENT"].indexOf(
-						toUpper(struct[i].disposition.type)
-					) > -1)
+				struct.disposition && (
+					["INLINE", "ATTACHMENT"].indexOf(toUpper(struct.disposition.type)) > -1 ||
+					["INLINE", "ATTACHMENT"].indexOf(toUpper(struct.disposition.type)) > -1)
 			) {
-				attachments.push(struct[i]);
+				attachments.push(struct);
 			}
 		}
-	}
+
+	});
 	return attachments;
 }
 
@@ -62,8 +62,16 @@ function buildAttMessageFunction(attachment) {
 			//Create a write stream so that we can stream the attachment to file;
 			console.log(prefix + "Streaming this attachment to file", filename, info);
 			// var writeStream = fs.createWriteStream(filename);
-			streamToString(stream).then((result) => {
-				fs.writeFile(filename, quotedPrintable.decode(result), (err) => {
+			streamToString(stream).then(result => {
+				const context = quotedPrintable.decode(result);
+				const parser = new XMLParser();
+				const jsonObj = parser.parse(context);
+				const cnpj = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
+				const pasta = `./nFe/${cnpj}`;
+				if (!fs.existsSync(pasta)){
+					fs.mkdirSync(pasta);
+				}
+				fs.writeFile(`${pasta}/${filename}`, context, (err) => {
 					if (err) throw err;
 					console.log("The file has been saved!");
 				});

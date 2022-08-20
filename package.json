@@ -11,17 +11,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^8.2.0",
     "base64-stream": "^1.0.0",
+    "dotenv": "^8.2.0",
     "download-email-attachments": "^2.0.1",
+    "fast-xml-parser": "^4.0.9",
     "fs": "^0.0.1-security",
     "imap": "^0.8.19",
     "moment": "^2.29.4",
     "quoted-printable": "^1.0.1",
     "util": "^0.12.4"
   },
-  "devDependencies":{
+  "devDependencies": {
     "nodemon": "^2.0.15"
   }
-
 }
