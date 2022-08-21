@@ -1,4 +1,5 @@
 const Util = require("./Util");
+const utilDate = require('./util/utilDate');
 const Imap = require("imap");
 const imap = new Imap({
 	user:  process.env.EMAIL,
@@ -19,9 +20,9 @@ const imap = new Imap({
 imap.once("ready", function () {
 	imap.openBox("INBOX", true, function (err, box) {
 		if (err) throw err;
-
+		const searchDate = utilDate.formatMesDiaAno(new Date(imap.dados.searchDate));
 		imap.search(
-			[["OR", "UNSEEN", ["SINCE", "April 20, 2022"]]],
+			[["OR", "UNSEEN", ["SINCE", searchDate]]],
 			function (err, results) {
 				if (err) throw err;
 
