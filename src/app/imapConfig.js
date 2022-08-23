@@ -2,7 +2,7 @@ const Util = require("./Util");
 const utilDate = require('./util/utilDate');
 const Imap = require("imap");
 const imap = new Imap({
-	user:  process.env.EMAIL,
+	user: process.env.EMAIL,
 	password: process.env.SENHA_EMAIL,
 	host: process.env.HOST_EMAIL,
 	port: process.env.PORT_EMAIL,
@@ -20,39 +20,40 @@ const imap = new Imap({
 imap.once("ready", function () {
 	imap.openBox("INBOX", true, function (err, box) {
 		if (err) throw err;
-		const searchDate = utilDate.formatMesDiaAno(new Date(imap.dados.searchDate));
+		const dataPadrao = "2022-04-01T03:00:00.000+00:00";
+		const searchDate = utilDate.formatMesDiaAno(new Date(imap.dados.searchDate || dataPadrao));
 		imap.search(
 			[["OR", "UNSEEN", ["SINCE", searchDate]]],
 			function (err, results) {
 				if (err) throw err;
-
+				console.log('results => ', results);
+				
 				const f = imap.fetch("*", {
 					bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
 					struct: true,
 				});
+				
 				f.on("message", function (msg, seqno) {
 					// console.log("Message #%d", seqno);
 
-					const prefix = "(#" + seqno + ") ";
-					msg.on("body", function (stream, info) {
-						let buffer = "";
-						stream.on("data", function (chunk) {
-							buffer += chunk.toString("utf8");
-						});
-						stream.once("end", function () {
+					const prefix = `(#${seqno}) `;
+					// msg.on("body", function (stream, info) {
+					// 	let buffer = "";
+					// 	stream.on("data", function (chunk) {
+					// 		buffer += chunk.toString("utf8");
+					// 	});
+					// 	stream.once("end", function () {
 							// console.log(
 							// 	prefix + "Parsed header: %s",
 							// 	Imap.parseHeader(buffer)
 							// );
-						});
-					});
+					// 	});
+					// });
+					
 					msg.once("attributes", function (attrs) {
 						const attachments = Util.findAttachmentParts(attrs.struct);
 						attachments.forEach(attachment => {
-							if (
-								attachment.type === "text" &&
-								attachment.subtype === "xml"
-							) {
+							if (Util.isXml(attachment)) {
 								const fetch = imap.fetch(attrs.uid, {
 									bodies: [attachment.partID],
 									struct: true,

@@ -9,7 +9,8 @@ router.get('/', function(req, res) {
 });
 
 router.post('/', function(req, res) {
-    service(req.body);
+    const imap = service(req.body);
+    // imap.end();
     res.status(200)
         .json({
             mensagem:`Envio padrão`,

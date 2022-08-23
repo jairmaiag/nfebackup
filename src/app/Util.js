@@ -6,7 +6,11 @@ class Util {
     toUpper(thing) {
         return thing && thing.toUpperCase ? thing.toUpperCase() : thing;
     }
-    
+
+    isXml(attachment) {
+        return attachment.type === "text" && attachment.subtype === "xml";
+    }
+
     static async streamToString(stream) {
         const chunks = [];
         return new Promise((resolve, reject) => {
@@ -30,9 +34,7 @@ class Util {
                 this.findAttachmentParts(struct, attachments);
             } else {
                 if (
-                    struct.disposition && (
-                        ["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1 ||
-                        ["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1)
+                    struct.disposition && (["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1)
                 ) {
                     attachments.push(struct);
                 }
@@ -44,14 +46,15 @@ class Util {
     buildAttMessageFunction(attachment) {
         const filename = attachment.params.name;
         return function (msg, seqno) {
-            const prefix = "(#" + seqno + ") ";
+            // const prefix = `(#${seqno}) `;
             msg.on("body", function (stream, info) {
                 Util.streamToString(stream).then(result => {
                     const context = quotedPrintable.decode(result);
                     const parser = new XMLParser();
                     const jsonObj = parser.parse(context);
                     const cnpjEmitente = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
-                    const pastaNfe = `${process.env.PWD}/nFe`
+                    const pastaNfe = `${process.env.PWD}/${process.env.PASTANFE}`;
+                    
                     if (!fs.existsSync(pastaNfe)){
                         fs.mkdirSync(pastaNfe);
                     }
