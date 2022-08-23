@@ -3,11 +3,11 @@ const quotedPrintable = require("quoted-printable");
 const { XMLParser } = require('fast-xml-parser');
 
 class Util {
-    toUpper(thing) {
+    static toUpper(thing) {
         return thing && thing.toUpperCase ? thing.toUpperCase() : thing;
     }
 
-    isXml(attachment) {
+    static isXml(attachment) {
         return attachment.type === "text" && attachment.subtype === "xml";
     }
 
@@ -19,22 +19,15 @@ class Util {
             stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
         });
     }
-    validStruct(struct) {
-        const arrayFiltro = ["INLINE", "ATTACHMENT"];
-        if(!struct.disposition){
-            return false;
-        }
-        return arrayFiltro.indexOf(this.toUpper(struct.disposition.type)) > -1;
-    }
 
-    findAttachmentParts(structs, attachments) {
+    static findAttachmentParts(structs, attachments) {
         attachments = attachments || [];
         structs.forEach(struct => {
             if (Array.isArray(struct)) {
-                this.findAttachmentParts(struct, attachments);
+                Util.findAttachmentParts(struct, attachments);
             } else {
                 if (
-                    struct.disposition && (["INLINE", "ATTACHMENT"].indexOf(this.toUpper(struct.disposition.type)) > -1)
+                    struct.disposition && (["INLINE", "ATTACHMENT"].indexOf(Util.toUpper(struct.disposition.type)) > -1)
                 ) {
                     attachments.push(struct);
                 }
@@ -43,10 +36,10 @@ class Util {
         });
         return attachments;
     }
-    buildAttMessageFunction(attachment) {
+    
+    static buildAttMessageFunction(attachment) {
         const filename = attachment.params.name;
         return function (msg, seqno) {
-            // const prefix = `(#${seqno}) `;
             msg.on("body", function (stream, info) {
                 Util.streamToString(stream).then(result => {
                     const context = quotedPrintable.decode(result);
@@ -64,14 +57,10 @@ class Util {
                     }
                     fs.writeFile(`${pasta}/${filename}`, context, (err) => {
                         if (err) throw err;
-                        // console.err("The file has been saved!");
                     });
                 });
-            });
-            msg.once("end", function () {
-                // console.log(prefix + "Finished attachment %s", filename);
             });
         };
     }    
 }
-module.exports = new Util();
+module.exports = Util;
