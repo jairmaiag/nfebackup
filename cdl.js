@@ -6,10 +6,10 @@ const { Base64Encode } = require("base64-stream");
 const quotedPrintable = require("quoted-printable");
 const Imap = require("imap");
 const imap = new Imap({
-	user:  process.env.EMAIL,
-	password: process.env.SENHA_EMAIL,
-	host: process.env.HOST_EMAIL,
-	port: process.env.PORT_EMAIL,
+	user:  process.env.EMAIL_USER,
+	password: process.env.EMAIL_PASSWORD,
+	host: process.env.EMAIL_HOST,
+	port: process.env.EMAIL_PORT,
 	tls: true,
 	tlsOptions: {
 		rejectUnauthorized: false,
@@ -46,8 +46,8 @@ function findAttachmentParts(structs, attachments) {
 				attachments.push(struct);
 			}
 		}
-
 	});
+  
 	return attachments;
 }
 
