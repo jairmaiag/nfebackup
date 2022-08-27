@@ -4,7 +4,7 @@ const {
   buildAttMessageFunction,
   findAttachmentParts,
   formatMesDiaAno,
-  isXml
+  isXml,
 } = require("../utils");
 
 const imap = new Imap({
@@ -33,16 +33,19 @@ imap.on("ready", function () {
     );
 
     imap.search(
-      [["OR", "ALL", ["SINCE", searchDate]]],
+      [["OR", "UNSEEN", ["SINCE", searchDate]]],
       function (err, results) {
         if (err) throw err;
 
-        const f = imap.fetch("*", {
+        console.log(results);
+
+        const imapFetch = imap.fetch("*", {
           bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
           struct: true,
         });
 
-        f.on("message", function (msg, seqno) {
+        imapFetch.on("message", function (msg, seqno) {
+          console.log(seqno);
           msg.on("attributes", function (attrs) {
             const attachments = findAttachmentParts(attrs.struct);
 
@@ -58,11 +61,11 @@ imap.on("ready", function () {
           });
         });
 
-        f.on("error", function (err) {
+        imapFetch.on("error", function (err) {
           console.error("Fetch error: " + err);
         });
 
-        f.on("end", function () {
+        imapFetch.on("end", function () {
           imap.end();
         });
       }

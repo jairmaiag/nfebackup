@@ -26,7 +26,10 @@ function toUpper(thing) {
 }
 
 function isXml(attachment) {
-  return attachment.type === "text" && attachment.subtype === "xml";
+  return (
+    (attachment.type === "text" || attachment.type === "application") &&
+    attachment.subtype === "xml"
+  );
 }
 
 function streamToString(stream) {
@@ -46,9 +49,7 @@ function findAttachmentParts(structs, attachments) {
     } else {
       if (
         struct.disposition &&
-        ["INLINE", "ATTACHMENT"].indexOf(
-          toUpper(struct.disposition.type)
-        ) > -1
+        ["INLINE", "ATTACHMENT"].indexOf(toUpper(struct.disposition.type)) > -1
       ) {
         attachments.push(struct);
       }
@@ -67,12 +68,15 @@ function buildAttMessageFunction(attachment) {
         const parser = new XMLParser();
         const jsonObj = parser.parse(context);
         const cnpjEmitente = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
-
-        const pastaNfe = `${process.env.PWD}/${process.env.DOWNLOAD_FOLDER}`;
+        let pastaNfe = process.env.DOWNLOAD_FOLDER;
+        if (process.env.NODE_ENV == "development") {
+          pastaNfe = `${
+            process.env.PWD ? process.env.PWD + "/nfe" : ""
+          }${"nfe"}`;
+        }
         const pasta = `${pastaNfe}/${cnpjEmitente}`;
-
         if (!fs.existsSync(pasta)) {
-          fs.mkdirSync(pasta, {recursive: true});
+          fs.mkdirSync(pasta, { recursive: true });
         }
 
         fs.writeFile(`${pasta}/${filename}`, context, (err) => {
