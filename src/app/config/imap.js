@@ -39,7 +39,7 @@ imap.on("ready", function () {
 
         console.log(results);
 
-        const imapFetch = imap.fetch("*", {
+        const imapFetch = imap.fetch(results, {
           bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
           struct: true,
         });
