@@ -70,9 +70,8 @@ function buildAttMessageFunction(attachment) {
         const cnpjEmitente = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
         let pastaNfe = process.env.DOWNLOAD_FOLDER;
         if (process.env.NODE_ENV == "development") {
-          pastaNfe = `${
-            process.env.PWD ? process.env.PWD + "/nfe" : ""
-          }${"nfe"}`;
+          pastaNfe = `${process.env.PWD ? process.env.PWD + "/" : ""
+            }${"nfe"}`;
         }
         const pasta = `${pastaNfe}/${cnpjEmitente}`;
         if (!fs.existsSync(pasta)) {
