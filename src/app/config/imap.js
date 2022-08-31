@@ -27,7 +27,6 @@ imap.on("ready", function () {
   imap.openBox("INBOX", true, function (err, box) {
     if (err) throw err;
     const defaultDate = process.env.DEFAULT_DATE;
-
     const searchDate = formatMesDiaAno(
       new Date(imap.dados.searchDate || defaultDate)
     );
@@ -37,15 +36,12 @@ imap.on("ready", function () {
       function (err, results) {
         if (err) throw err;
 
-        console.log(results);
-
         const imapFetch = imap.fetch(results, {
           bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
           struct: true,
         });
 
         imapFetch.on("message", function (msg, seqno) {
-          console.log(seqno);
           msg.on("attributes", function (attrs) {
             const attachments = findAttachmentParts(attrs.struct);
 

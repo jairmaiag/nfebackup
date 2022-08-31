@@ -1,6 +1,5 @@
 const fs = require("fs");
 const quotedPrintable = require("quoted-printable");
-const { XMLParser } = require("fast-xml-parser");
 
 const meses = [
   "January",
@@ -60,20 +59,22 @@ function findAttachmentParts(structs, attachments) {
 
 function buildAttMessageFunction(attachment) {
   const filename = attachment.params.name;
+  const chaveNfe = filename.replace(/\D+/g, '');
 
   return function (msg, seqno) {
     msg.on("body", function (stream, info) {
       streamToString(stream).then((result) => {
         const context = quotedPrintable.decode(result);
-        const parser = new XMLParser();
-        const jsonObj = parser.parse(context);
-        const cnpjEmitente = jsonObj.nfeProc.NFe.infNFe.emit.CNPJ;
+        const ano = chaveNfe.substring(2, 4);
+        const mes = chaveNfe.substring(4, 6);
+        const cnpj = chaveNfe.substring(6, 20);
         let pastaNfe = process.env.DOWNLOAD_FOLDER;
         if (process.env.NODE_ENV == "development") {
           pastaNfe = `${process.env.PWD ? process.env.PWD + "/" : ""
             }${"nfe"}`;
         }
-        const pasta = `${pastaNfe}/${cnpjEmitente}`;
+        const pasta = `${pastaNfe}/${cnpj}/emitidas/${ano}/${mes}`;
+
         if (!fs.existsSync(pasta)) {
           fs.mkdirSync(pasta, { recursive: true });
         }
