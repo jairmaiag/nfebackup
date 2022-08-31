@@ -7,6 +7,8 @@ Programa para backup de nfe
   - [Pré-rquisito](#pré-rquisito)
   - [Variáveis de ambiente](#variáveis-de-ambiente)
   - [Executando](#executando)
+  - [Testando](#testando)
+  
 
 ## Iniciando
 
@@ -39,3 +41,15 @@ Utilize o **npm** para executar o mesmo com um dos comandos abaixo:
 
 1. npm start
 2. npm run dev
+
+[Voltar ao Índice](#nfeBackup)
+### Testando 
+Uma vez que o projeto já tenha sido baixado e as dependências instaladas, é possívle fazer um teste.  
+Crie um aquivo com o nome de `teste.js` e dentro destes coloque os seguinte código:  
+`const dotenv = require("dotenv");   
+dotenv.config();   
+const service = require("./src/app/services/main");   
+service();`   
+No console do terminal digite `node teste.js`, o mesmo será executado e os emils baixados.  
+
+[Voltar ao Índice](#nfeBackup)
