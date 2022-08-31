@@ -28,14 +28,16 @@ imap.on("ready", function () {
     if (err) throw err;
     const defaultDate = process.env.DEFAULT_DATE;
     const searchDate = formatMesDiaAno(
-      new Date(imap.dados.searchDate || defaultDate)
+      new Date(imap.dados?.searchDate || defaultDate)
     );
-
+    imap.qtdNfe = 0;
+    imap.qtdEmail = 0;
     imap.search(
       [["OR", "UNSEEN", ["SINCE", searchDate]]],
       function (err, results) {
         if (err) throw err;
 
+        imap.qtdEmail += results.length;
         const imapFetch = imap.fetch(results, {
           bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
           struct: true,
@@ -44,7 +46,7 @@ imap.on("ready", function () {
         imapFetch.on("message", function (msg, seqno) {
           msg.on("attributes", function (attrs) {
             const attachments = findAttachmentParts(attrs.struct);
-
+            imap.qtdNfe += attachments.length;
             attachments.forEach((attachment) => {
               if (isXml(attachment)) {
                 const fetch = imap.fetch(attrs.uid, {

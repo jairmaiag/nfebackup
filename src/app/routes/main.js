@@ -7,12 +7,13 @@ router.get("/", function (req, res) {
   res.status(200).json({ mensagem: `Envio padrão` });
 });
 
-router.post("/", function (req, res) {
-  service(req.body);
-
+router.post("/", async function (req, res) {
+  const resposta = await service(req.body);
+  req.body.totalDeEmails = resposta.qtdEmail;
+  req.body.totalDeNotas = resposta.qtdNfe;
   res.status(200).json({
+    mensagem: `Resultados do processamento.`,
     data: req.body,
-    mensagem: `Envio padrão`,
   });
 });
 
