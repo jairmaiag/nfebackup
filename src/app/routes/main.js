@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { resultValidate } = require("../utils");
 const service = require("../services/main");
 
 router.get("/", function (req, res) {
@@ -8,11 +8,15 @@ router.get("/", function (req, res) {
 });
 
 router.post("/", async function (req, res) {
-  const resposta = await service(req.body);
-  req.body.totalDeEmails = resposta.qtdEmail;
-  req.body.totalDeNotas = resposta.qtdNfe;
-  res.status(200).json({
-    mensagem: `Resultados do processamento.`,
+  const isValid = resultValidate(req.body);
+  if (isValid.satusCode === 200) {
+    const resposta = await service(req.body);
+    req.body.totalDeEmails = resposta.qtdEmail;
+    req.body.totalDeNotas = resposta.qtdNfe;
+  }
+  const mensagem = isValid ? `Resultados do processamento.` : `Estrutura de campos é inválido`;
+  res.status(isValid.satusCode).json({
+    mensagem,
     data: req.body,
   });
 });

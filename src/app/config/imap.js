@@ -8,10 +8,6 @@ const {
 } = require("../utils");
 
 const imap = new Imap({
-  host: process.env.EMAIL_HOST,
-  password: process.env.EMAIL_PASSWORD,
-  port: process.env.EMAIL_PORT,
-  user: process.env.EMAIL_USER,
   tls: true,
   tlsOptions: {
     rejectUnauthorized: false,
@@ -28,7 +24,7 @@ imap.on("ready", function () {
     if (err) throw err;
     const defaultDate = process.env.DEFAULT_DATE;
     const searchDate = formatMesDiaAno(
-      new Date(imap.dados?.searchDate || defaultDate)
+      new Date(imap._config.searchDate || defaultDate)
     );
     imap.qtdNfe = 0;
     imap.qtdEmail = 0;

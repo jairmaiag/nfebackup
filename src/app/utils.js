@@ -87,6 +87,48 @@ function buildAttMessageFunction(attachment) {
   };
 }
 
+function validateField(obj) {
+  const { host, password, port, user, searchDate } = obj;
+  if (!host) {
+    return false;
+  }
+  if (!password) {
+    return false;
+  }
+  if (!port) {
+    return false;
+  }
+  if (!user) {
+    return false;
+  }
+  if (!searchDate) {
+    return false;
+  }
+  return true;
+}
+function resultValidate(obj) {
+  return {
+    satusCode: validateField(obj) ? 200 : 404,
+    objReturn: {
+      mensagem: "Estrutura de campos é inválido, esperado como abaixo:",
+      data: {
+        searchDate: "2022-01-01T03:00:00.000+00:00",
+        host: "host.com.br",
+        password: "Senha do email",
+        port: 123,
+        user: "usuario@host.com.br"
+      }
+    }
+  }
+}
+const defaultEmail = {
+  host: process.env.EMAIL_HOST,
+  password: process.env.EMAIL_PASSWORD,
+  port: process.env.EMAIL_PORT,
+  user: process.env.EMAIL_USER,
+  searchDate: process.env.DEFAULT_DATE
+}
+
 module.exports = {
   buildAttMessageFunction,
   findAttachmentParts,
@@ -94,4 +136,7 @@ module.exports = {
   isXml,
   streamToString,
   toUpper,
+  validateField,
+  resultValidate,
+  defaultEmail
 };
