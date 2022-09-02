@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model NFECustomer {
+  id               Int      @id @default(autoincrement())
+  suuid            String   @default(uuid())
+  corporateName    String   @db.VarChar(255)
+  fantasyName      String   @db.VarChar(255)
+  CNPJ             String   @db.VarChar(14)
+  DDI01            String   @db.VarChar(5)
+  DDD01            String   @db.VarChar(5)
+  phoneNumber01    String   @db.VarChar(15)
+  DDI02            String?  @db.VarChar(5)
+  DDD02            String?  @db.VarChar(5)
+  phoneNumber02    String?  @db.VarChar(15)
+  email            String   @db.VarChar(100)
+  street           String   @db.VarChar(255)
+  addressNumber    String   @db.VarChar(10)
+  district         String   @db.VarChar(100)
+  city             String   @db.VarChar(100)
+  state            String   @db.VarChar(2)
+  country          String   @default("BRASIL")
+  nfeEmailUser     String   @db.VarChar(100)
+  nfeEmailPassword String   @db.VarChar(25)
+  nfeEmailHost     String   @db.VarChar(100)
+  nfeEmailPort     String   @db.VarChar(5)
+  nfeLastDateRead  DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("nfe_customers")
+}
+
+model NFEBackup {
+  id               Int      @id @default(autoincrement())
+  nfeEmailUser     String   @db.VarChar(100)
+  nfeEmailPassword String   @db.VarChar(25)
+  nfeEmailHost     String   @db.VarChar(100)
+  nfeEmailPort     String   @db.VarChar(5)
+  nfeLastDateRead  DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("nfe_backup")
+}
