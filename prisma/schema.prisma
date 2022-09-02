@@ -12,10 +12,9 @@ datasource db {
 
 model NFECustomer {
   id               Int      @id @default(autoincrement())
-  suuid            String   @default(uuid())
   corporateName    String   @db.VarChar(255)
   fantasyName      String   @db.VarChar(255)
-  CNPJ             String   @db.VarChar(14)
+  CNPJ             String   @unique @db.VarChar(14)
   DDI01            String   @db.VarChar(5)
   DDD01            String   @db.VarChar(5)
   phoneNumber01    String   @db.VarChar(15)

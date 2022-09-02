@@ -4,29 +4,22 @@ const { PrismaClient } = require("@prisma/client");
 
 module.exports = function CreateNFEBackupController() {
   return async (request, response) => {
-    prismaClient = new PrismaClient({
-      log: ["error", "info", "query", "warn"],
-    });
+    try {
+      prismaClient = new PrismaClient({
+        log: ["error", "info", "query", "warn"],
+      });
 
-    const {
-      nfeEmailUser,
-      nfeEmailPassword,
-      nfeEmailHost,
-      nfeEmailPort,
-      nfeLastDateRead,
-    } = request.body;
+      const data = request.body;
+      delete data.id;
 
-    const nfeBackup = await prismaClient.NFEBackup.create({
-      data: {
-        nfeEmailUser,
-        nfeEmailPassword,
-        nfeEmailHost,
-        nfeEmailPort,
-        nfeLastDateRead,
-      },
-    });
+      const nfeBackup = await prismaClient.NFEBackup.create({
+        data,
+      });
 
-    response.status(200).json(nfeBackup);
+      response.status(200).json(nfeBackup);
+    } catch (error) {
+      response.status(500).json({ error: `Error: ${error}` });
+    }
   };
 };
 

@@ -1,13 +1,13 @@
 const express = require("express");
-const createNFECustomer = require("../controllers/NFECustomer/createNFECustomerController");
-const createNFEBackup = require("../controllers/NFEBackup/createNFEBackupController");
 const router = express.Router();
-const { resultValidate } = require("../utils");
 
-// const { adapt } = require("../adapters/expressRouterAdapter");
-// const CreateNFECustomerController = require("../controllers/NFECustomer/createNFECustomerController");
-// const createNFECustomer = new CreateNFECustomerController();
-// const createNFEBackup = new CreateNFEBackupController();
+const createNFECustomer = require("../controllers/NFECustomer/createNFECustomerController");
+const updateNFECustomer = require("../controllers/NFECustomer/updateNFECustomerController");
+const findUniqueNFECustomer = require("../controllers/NFECustomer/findUniqueNFECustomerController");
+const deleteNFECustomer = require("../controllers/NFECustomer/deleteNFECustomerController");
+const createNFEBackup = require("../controllers/NFEBackup/createNFEBackupController");
+const updateNFEBackup = require("../controllers/NFEBackup/updateNFEBackupController");
+const { resultValidate } = require("../utils");
 
 const service = require("../services/main");
 
@@ -32,6 +32,10 @@ router.post("/", async function (req, res) {
 });
 
 router.post("/nfeCustomer", createNFECustomer());
+router.put("/nfeCustomer", updateNFECustomer());
+router.get("/nfeCustomer", findUniqueNFECustomer());
+router.delete("/nfeCustomer", deleteNFECustomer());
 router.post("/nfeBackup", createNFEBackup());
+router.put("/nfeBackup", updateNFEBackup());
 
 module.exports = router;
