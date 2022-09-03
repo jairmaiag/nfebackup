@@ -32,3 +32,12 @@ fieldset legend {
 .rounded {
     background-color: #f44336;
 }
+
+footer {
+    background-color: #3d86b8;
+}
+
+.colorFontFooter {
+    color: #fff;
+    padding-left: 5px;
+}

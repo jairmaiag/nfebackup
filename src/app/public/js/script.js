@@ -9,7 +9,7 @@ if (form) {
         let strEnvio = '';
         campos.forEach(campo => {
             if (campo.value) {
-                strEnvio += `"${objInput.name}":"${objInput.value}"`;
+                strEnvio += `"${campo.name}":"${campo.value}"`;
                 strEnvio += ',';
             }
         });
