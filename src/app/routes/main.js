@@ -12,8 +12,15 @@ const { resultValidate } = require("../utils");
 const service = require("../services/main");
 
 router.get("/", function (req, res) {
-  res.status(200).json({ mensagem: `Envio padrão` });
+  res.render('main/index');
 });
+router.get("/customer", function (req, res) {
+  res.render('customer/index');
+});
+router.get("/backup", function (req, res) {
+  res.render('backup/index');
+});
+
 
 router.post("/", async function (req, res) {
   const isValid = resultValidate(req.body);

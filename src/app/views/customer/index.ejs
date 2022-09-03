@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="css/materialize.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Backup de nfe</title>
+</head>
+
+<body>
+    <main class="container">
+        <%- include('../header.ejs'); %>
+            <h3>Cadastro de clientes</h3>
+            <div id="alerta"></div>
+            <form id="fCostumer" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input placeholder="Nome da empresa" id="corporateName" name="corporateName" type="text"
+                            class="validate" autofocus>
+                        <label for="corporateName">Nome da empresa</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input placeholder="Nome fantasia" id="fantasyName" name="fantasyName" type="text"
+                            class="validate">
+                        <label for="fantasyName">Nome fantasia</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 m6">
+                        <input placeholder="99999999000099" id="CNPJ" name="CNPJ" type="number" maxlength="14"
+                            class="validate">
+                        <label for="CNPJ">CNPJ</label>
+                    </div>
+                    <div class="input-field col s12 m6">
+                        <input id="email" name="email" type="email" class="validate">
+                        <label for="email">E-mail</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <fieldset>
+                        <legend>Telefone principal</legend>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="55" id="DDI01" name="DDI01" type="number" class="validate">
+                            <label for="DDI01">DDI</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="99" id="DDD01" name="DDD01" type="number" class="validate">
+                            <label for="DDD01">DDD</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="988885555" id="phoneNumber01" name="phoneNumber01" type="number"
+                                class="validate">
+                            <label for="phoneNumber01">Telefone</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="row">
+                    <fieldset>
+                        <legend>Telefone secundário</legend>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="55" id="DDI02" name="DDI02" type="number">
+                            <label for="DDI02">DDI</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="99" id="DDD02" name="DDD02" type="number">
+                            <label for="DDD02">DDD</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="988885555" id="phoneNumber02" name="phoneNumber02" type="number">
+                            <label for="phoneNumber02">Telefone</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="row">
+                    <fieldset>
+                        <legend>Endereço</legend>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="Rua xxxxx" id="street" name="street" type="text">
+                            <label for="street">Logradouro</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="Número" id="addressNumber" name="addressNumber" type="text">
+                            <label for="addressNumber">Número</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="Bairro" id="district" name="district" type="text">
+                            <label for="district">Bairro</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="Cidade" id="city" name="city" type="text">
+                            <label for="city">Cidade</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="SC" id="state" name="state" type="text" maxlength="2">
+                            <label for="state">Estado</label>
+                        </div>
+                        <div class="input-field col s12 m4">
+                            <input placeholder="Pais" id="country" name="country" type="text">
+                            <label for="country">Pais</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="row">
+                    <fieldset>
+                        <legend>Email nfe</legend>
+                        <div class="input-field col s12 m3">
+                            <input placeholder="conta@host.com.br" id="nfeEmailUser" name="nfeEmailUser" type="email"
+                                class="validate">
+                            <label for="nfeEmailUser">Email</label>
+                        </div>
+                        <div class="input-field col s12 m3">
+                            <input placeholder="Senha" id="nfeEmailPassword" name="nfeEmailPassword" type="password">
+                            <label for="nfeEmailPassword">Senha</label>
+                        </div>
+                        <div class="input-field col s12 m3">
+                            <input placeholder="gmail.com.br" id="nfeEmailHost" name="nfeEmailHost" type="text">
+                            <label for="nfeEmailHost">Host</label>
+                        </div>
+                        <div class="input-field col s12 m3">
+                            <input placeholder="999" id="nfeEmailPort" name="nfeEmailPort" type="number">
+                            <label for="nfeEmailPort">Porta</label>
+                        </div>
+                    </fieldset>
+                </div>
+                <button class="btn waves-effect waves-light mb3" type="submit">Salvar
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
+    </main>
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/materialize.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
