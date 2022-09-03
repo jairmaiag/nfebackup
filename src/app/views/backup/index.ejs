@@ -14,7 +14,34 @@
 <body>
     <main class="container">
         <%- include('../header.ejs'); %>
-            Nfe
+            <h3>Cadastro de notas</h3>
+            <div id="alerta"></div>
+            <form id="nfeBackup" class="col s12">
+                <div class="row">
+                    <div class="input-field col s12 m3">
+                        <input placeholder="E-mail do usuário" id="nfeEmailUser" name="nfeEmailUser" type="email"
+                            maxlength="100" class="validate" autofocus>
+                        <label for="nfeEmailUser">E-mail</label>
+                    </div>
+                    <div class="input-field col s12 m3">
+                        <input placeholder="xxxx" id="nfeEmailPassword" name="nfeEmailPassword" type="password"
+                            maxlength="25" class="validate">
+                        <label for="nfeEmailPassword">Senha</label>
+                    </div>
+                    <div class="input-field col s12 m3">
+                        <input placeholder="host.com.br" id="nfeEmailHost" name="nfeEmailHost" type="text" max="100"
+                            class="validate">
+                        <label for="nfeEmailHost">Host</label>
+                    </div>
+                    <div class="input-field col s12 m3">
+                        <input placeholder="999" id="nfeEmailPort" name="nfeEmailPort" type="number" class="validate">
+                        <label for="nfeEmailPort">Porta</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light mb3" type="submit">Salvar
+                    <i class="material-icons right">send</i>
+                </button>
+            </form>
             <%- include('../footer.ejs'); %>
     </main>
     <script src="js/jquery-3.6.1.min.js"></script>
