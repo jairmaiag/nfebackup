@@ -7,7 +7,7 @@ module.exports = function FindUniqueNFECustomerController() {
         log: ["error", "info", "query", "warn"],
       });
 
-      const { id, CNPJ, cnpj } = request.body;
+      const { id, cnpj } = request.params;
 
       let queryArgs;
       if (id) {
@@ -16,32 +16,37 @@ module.exports = function FindUniqueNFECustomerController() {
             id,
           },
         };
-      } else if (CNPJ || cnpj) {
-        const SearchCNPJ = CNPJ || cnpj;
+      } else if (cnpj) {
         queryArgs = {
           where: {
-            CNPJ: SearchCNPJ,
+            CNPJ: cnpj,
           },
         };
       } else {
-        return response.status(400).json({
-          error: `Use the fields 'id' or 'CNPJ' on body to search NFECustomer`,
+        response.status(400).json({
+          error: "Use the field 'CNPJ' to search NFECustomer",
         });
+        return;
       }
 
       try {
-        const nfeCustomer = await prismaClient.NFECustomer.findUniqueOrThrow(
+        const nfeCustomer = await prismaClient.NFECustomer.findUnique(
           queryArgs
         );
+        if (!nfeCustomer) {
+          const message = id ? `ID ${id}` : ` CNPJ ${cnpj}`;
+          response.status(400).json({
+            error: `Search with ${message} does not exist in the database`,
+          });
+          return;
+        }
 
         response.status(200).json(nfeCustomer);
       } catch (error) {
-        response
-          .status(400)
-          .json({ error: `Put with ID ${id} does not exist in the database` });
+        response.status(400).json({ error: `${error}` });
       }
     } catch (error) {
-      response.status(500).json({ error: `Error: ${error}` });
+      response.status(500).json({ error: `${error}` });
     }
   };
 };

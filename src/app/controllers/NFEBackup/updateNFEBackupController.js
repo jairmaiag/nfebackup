@@ -7,29 +7,38 @@ module.exports = function UpdateNFEBackupController() {
         log: ["error", "info", "query", "warn"],
       });
 
-      const { id, nfeLastDateRead } = request.body;
+      const { nfeEmailUser, nfeLastDateRead } = request.body;
       try {
+        const nfeBackupResult = await prismaClient.NFEBackup.findUnique({
+          where: {
+            nfeEmailUser,
+          },
+        });
+        if (!nfeBackupResult) {
+          response.status(400).json({
+            error: `NFEBackup with nfeEmailUser ${nfeEmailUser} does not exist in the database`,
+          });
+          return;
+        }
+
         const nfeBackup = await prismaClient.NFEBackup.update({
           where: {
-            id,
+            nfeEmailUser,
           },
           data: {
             nfeLastDateRead,
           },
           select: {
-            id: true,
+            nfeEmailUser: true,
             nfeLastDateRead: true,
           },
         });
-
         response.status(200).json(nfeBackup);
       } catch (error) {
-        response
-          .status(400)
-          .json({ error: `Put with ID ${id} does not exist in the database` });
+        response.status(400).json({ error: `${error}` });
       }
     } catch (error) {
-      response.status(500).json({ error: `Error: ${error}` });
+      response.status(500).json({ error: `${error}` });
     }
   };
 };

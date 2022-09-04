@@ -25,6 +25,7 @@ model NFECustomer {
   street           String   @db.VarChar(255)
   addressNumber    String   @db.VarChar(10)
   district         String   @db.VarChar(100)
+  zipCode          String   @db.VarChar(8)
   city             String   @db.VarChar(100)
   state            String   @db.VarChar(2)
   country          String   @default("BRASIL")
@@ -33,6 +34,7 @@ model NFECustomer {
   nfeEmailHost     String   @db.VarChar(100)
   nfeEmailPort     String   @db.VarChar(5)
   nfeLastDateRead  DateTime @default(now())
+  inactive         Boolean  @default(false)
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -41,7 +43,7 @@ model NFECustomer {
 
 model NFEBackup {
   id               Int      @id @default(autoincrement())
-  nfeEmailUser     String   @db.VarChar(100)
+  nfeEmailUser     String   @unique @db.VarChar(100)
   nfeEmailPassword String   @db.VarChar(25)
   nfeEmailHost     String   @db.VarChar(100)
   nfeEmailPort     String   @db.VarChar(5)

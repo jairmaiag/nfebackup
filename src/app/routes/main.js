@@ -4,6 +4,7 @@ const router = express.Router();
 const createNFECustomer = require("../controllers/NFECustomer/createNFECustomerController");
 const updateNFECustomer = require("../controllers/NFECustomer/updateNFECustomerController");
 const findUniqueNFECustomer = require("../controllers/NFECustomer/findUniqueNFECustomerController");
+const findUniqueByEmailPasswordNFECustomer = require("../controllers/NFECustomer/findUniqueByEmailPasswordNFECustomerController");
 const deleteNFECustomer = require("../controllers/NFECustomer/deleteNFECustomerController");
 const createNFEBackup = require("../controllers/NFEBackup/createNFEBackupController");
 const updateNFEBackup = require("../controllers/NFEBackup/updateNFEBackupController");
@@ -12,15 +13,14 @@ const { resultValidate } = require("../utils");
 const service = require("../services/main");
 
 router.get("/", function (req, res) {
-  res.render('main/index');
+  res.render("main/index");
 });
 router.get("/customer", function (req, res) {
-  res.render('customer/index');
+  res.render("customer/index");
 });
 router.get("/backup", function (req, res) {
-  res.render('backup/index');
+  res.render("backup/index");
 });
-
 
 router.post("/", async function (req, res) {
   const isValid = resultValidate(req.body);
@@ -40,9 +40,11 @@ router.post("/", async function (req, res) {
 
 router.post("/nfeCustomer", createNFECustomer());
 router.put("/nfeCustomer", updateNFECustomer());
-router.get("/nfeCustomer", findUniqueNFECustomer());
-router.delete("/nfeCustomer", deleteNFECustomer());
+router.get("/nfeCustomer/cnpj/:cnpj", findUniqueNFECustomer());
+router.get("/nfeCustomer/id/:id", findUniqueNFECustomer());
+router.post("/nfeCustotmerValidate", findUniqueByEmailPasswordNFECustomer());
+router.delete("/nfeCustomer/cnpj/:cnpj", deleteNFECustomer());
 router.post("/nfeBackup", createNFEBackup());
-router.put("/nfeBackup", updateNFEBackup());
+router.put("/nfeBackupSynchronize", updateNFEBackup());
 
 module.exports = router;

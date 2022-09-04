@@ -7,16 +7,32 @@ module.exports = function CreateNFECustomerController() {
         log: ["error", "info", "query", "warn"],
       });
 
+      const { CNPJ } = request.body;
       const data = request.body;
       delete data.id;
 
-      const nfeCustomer = await prismaClient.NFECustomer.create({
-        data,
-      });
+      try {
+        const nfeCustomerResult = await prismaClient.NFECustomer.findUnique({
+          where: {
+            CNPJ,
+          },
+        });
+        if (nfeCustomerResult) {
+          response.status(400).json({
+            error: `Search with CNPJ ${CNPJ} already exist in the database`,
+          });
+          return;
+        }
 
-      response.status(200).json(nfeCustomer);
+        const nfeCustomer = await prismaClient.NFECustomer.create({
+          data,
+        });
+        response.status(200).json(nfeCustomer);
+      } catch (error) {
+        response.status(400).json({ error: `${error}` });
+      }
     } catch (error) {
-      response.status(500).json({ error: `Error: ${error}` });
+      response.status(500).json({ error: `${error}` });
     }
   };
 };
