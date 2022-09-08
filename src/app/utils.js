@@ -57,9 +57,9 @@ function findAttachmentParts(structs, attachments) {
   return attachments;
 }
 
-function buildAttMessageFunction(attachment) {
+function buildAttMessageFunction(attachment, folderName) {
   const filename = attachment.params.name;
-  const chaveNfe = filename.replace(/\D+/g, '');
+  const chaveNfe = filename.replace(/\D+/g, "");
 
   return function (msg, seqno) {
     msg.on("body", function (stream, info) {
@@ -70,10 +70,9 @@ function buildAttMessageFunction(attachment) {
         const cnpj = chaveNfe.substring(6, 20);
         let pastaNfe = process.env.DOWNLOAD_FOLDER;
         if (process.env.NODE_ENV == "development") {
-          pastaNfe = `${process.env.PWD ? process.env.PWD + "/" : ""
-            }${"nfe"}`;
+          pastaNfe = `${process.env.PWD ? process.env.PWD + "/" : ""}${"nfe"}`;
         }
-        const pasta = `${pastaNfe}/${cnpj}/emitidas/${ano}/${mes}`;
+        const pasta = `${pastaNfe}/${cnpj}/${folderName}/${ano}/${mes}`;
 
         if (!fs.existsSync(pasta)) {
           fs.mkdirSync(pasta, { recursive: true });
@@ -116,17 +115,14 @@ function resultValidate(obj) {
         host: "host.com.br",
         password: "Senha do email",
         port: 123,
-        user: "usuario@host.com.br"
-      }
-    }
-  }
+        user: "usuario@host.com.br",
+      },
+    },
+  };
 }
-const defaultEmail = {
-  host: process.env.EMAIL_HOST,
-  password: process.env.EMAIL_PASSWORD,
-  port: process.env.EMAIL_PORT,
-  user: process.env.EMAIL_USER,
-  searchDate: process.env.DEFAULT_DATE
+
+function montarMensagemJson(mensagem) {
+  return { mensagem: mensagem };
 }
 
 module.exports = {
@@ -138,5 +134,5 @@ module.exports = {
   toUpper,
   validateField,
   resultValidate,
-  defaultEmail
+  montarMensagemJson,
 };

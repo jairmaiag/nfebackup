@@ -1,6 +1,4 @@
-const { PrismaClient } = require("@prisma/client");
-
-module.exports = function DeleteNFECustomerController() {
+module.exports = function DeleteNFECustomerController(prismaClient) {
   return async (request, response) => {
     try {
       prismaClient = new PrismaClient({

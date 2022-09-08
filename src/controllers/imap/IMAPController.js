@@ -5,7 +5,7 @@ const {
   findAttachmentParts,
   formatMesDiaAno,
   isXml,
-} = require("../utils");
+} = require("../../app/utils");
 
 const imap = new Imap({
   tls: true,
@@ -21,7 +21,10 @@ const imap = new Imap({
 
 imap.on("ready", function () {
   imap.openBox("INBOX", true, function (err, box) {
-    if (err) throw err;
+    if (err) {
+      console.log("Error WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+      // throw err;
+    }
     const defaultDate = process.env.DEFAULT_DATE;
     const searchDate = formatMesDiaAno(
       new Date(imap._config.searchDate || defaultDate)
@@ -31,7 +34,10 @@ imap.on("ready", function () {
     imap.search(
       [["OR", "UNSEEN", ["SINCE", searchDate]]],
       function (err, results) {
-        if (err) throw err;
+        if (err) {
+          console.log("Error XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+          // throw err;
+        }
 
         imap.qtdEmail += results.length;
         const imapFetch = imap.fetch(results, {
@@ -49,14 +55,19 @@ imap.on("ready", function () {
                   bodies: [attachment.partID],
                   struct: true,
                 });
-                fetch.on("message", buildAttMessageFunction(attachment));
+                fetch.on(
+                  "message",
+                  buildAttMessageFunction(attachment, imap._config.folderName)
+                );
               }
             });
           });
         });
 
         imapFetch.on("error", function (err) {
-          console.error("Fetch error: " + err);
+          console.error(
+            "Fetch error DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD: " + err
+          );
         });
 
         imapFetch.on("end", function () {

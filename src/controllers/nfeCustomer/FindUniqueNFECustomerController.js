@@ -1,12 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
-
-module.exports = function FindUniqueNFECustomerController() {
+module.exports = function FindUniqueNFECustomerController(prismaClient) {
   return async (request, response) => {
     try {
-      prismaClient = new PrismaClient({
-        log: ["error", "info", "query", "warn"],
-      });
-
       const { id, cnpj } = request.params;
 
       let queryArgs;
@@ -15,11 +9,17 @@ module.exports = function FindUniqueNFECustomerController() {
           where: {
             id,
           },
+          select: {
+            inactive: true,
+          },
         };
       } else if (cnpj) {
         queryArgs = {
           where: {
             CNPJ: cnpj,
+          },
+          select: {
+            inactive: true,
           },
         };
       } else {
@@ -30,20 +30,14 @@ module.exports = function FindUniqueNFECustomerController() {
       }
 
       try {
-        const nfeCustomer = await prismaClient.NFECustomer.findUnique(
+        const nfeCustomer = await prismaClient.NFECustomer.findUniqueOrThrow(
           queryArgs
         );
-        if (!nfeCustomer) {
-          const message = id ? `ID ${id}` : ` CNPJ ${cnpj}`;
-          response.status(400).json({
-            error: `Search with ${message} does not exist in the database`,
-          });
-          return;
-        }
-
-        response.status(200).json(nfeCustomer);
+        response.status(200).json({ status: "success" });
       } catch (error) {
-        response.status(400).json({ error: `${error}` });
+        response.status(400).json({
+          status: `Search with CNPJ ${cnpj} does not exist in the database`,
+        });
       }
     } catch (error) {
       response.status(500).json({ error: `${error}` });

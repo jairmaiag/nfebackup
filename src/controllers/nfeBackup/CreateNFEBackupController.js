@@ -1,14 +1,6 @@
-// const prismaCliente = require("../../../database/prismaClient");
-
-const { PrismaClient } = require("@prisma/client");
-
-module.exports = function CreateNFEBackupController() {
+module.exports = function CreateNFEBackupController(prismaClient) {
   return async (request, response) => {
     try {
-      prismaClient = new PrismaClient({
-        log: ["error", "info", "query", "warn"],
-      });
-
       const { nfeEmailUser } = request.body;
       const data = request.body;
       delete data.id;
