@@ -1,4 +1,4 @@
-const findUniqueNFECustomer = require("./findUniqueNFECustomerController");
+const findUniqueNFECustomer = require("./FindUniqueNFECustomerController");
 
 module.exports = function UpdateNFECustomerController(prismaClient) {
   return async (request, response) => {

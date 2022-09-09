@@ -6,14 +6,11 @@ module.exports = class ReadEmailUseCase {
 
     return await new Promise((resolve, reject) => {
       imap.on("error", (err) => {
-        console.log(
-          "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-        );
         console.error(err);
         reject(err);
       });
-      imap.on("ready", () => resolve());
+      imap.on("close", () => resolve());
       imap.connect();
-    }).catch(console.log("Erro do IMAP"));
+    }).catch((err) => console.log("Erro do IMAP", err));
   }
 };
