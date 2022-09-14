@@ -1,6 +1,6 @@
-const SyncronizerNFEBackupUseCase = require("./SyncronizerNFEBackupUseCase");
+import { SyncronizerNFEBackupUseCase } from './index.js'
 
-module.exports = function NFEBackupSyncronizer(prismaClient) {
+export default function NFEBackupSyncronizer(prismaClient) {
   return async (request, response) => {
     try {
       const syncronizerNFEBackupUseCase = new SyncronizerNFEBackupUseCase(

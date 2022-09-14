@@ -5,4 +5,4 @@ class AccessDeniedError {
   }
 }
 
-module.exports = AccessDeniedError
+export default AccessDeniedError

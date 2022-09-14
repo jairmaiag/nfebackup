@@ -1,6 +1,6 @@
-const { imap } = require("../../controllers/imap/IMAPController");
+import { IMAPController as imap } from '../../controllers/imap/index.js'
 
-module.exports = class ReadEmailUseCase {
+export default class ReadEmailUseCase {
   async handle(objData) {
     imap._config = { ...imap._config, ...objData };
 

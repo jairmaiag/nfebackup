@@ -5,4 +5,4 @@ class UnauthorizedError {
   }
 }
 
-module.exports = UnauthorizedError
+export default UnauthorizedError

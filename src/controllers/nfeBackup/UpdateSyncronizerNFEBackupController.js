@@ -1,5 +1,5 @@
-const { serverError, ok } = require("../../app/helpers/http/HttpHelpers");
-const { MissingParamError } = require("../../app/errors/MissingParamError");
+import httpHelper from "../../app/helpers/http/HttpHelpers.js"
+import { MissingParamError } from '../../app/errors/index.js'
 
 class UpdateSyncronizerNFEBackupController {
   constructor(prismaClient) {
@@ -27,12 +27,12 @@ class UpdateSyncronizerNFEBackupController {
           nfeLastDateRead: true,
         },
       });
-      return ok(nfeBackup);
+      return httpHelper.ok(nfeBackup);
     } catch (error) {
       console.log(error);
-      return serverError(error);
+      return httpHelper.serverError(error);
     }
   }
 }
 
-module.exports = UpdateSyncronizerNFEBackupController;
+export default UpdateSyncronizerNFEBackupController;

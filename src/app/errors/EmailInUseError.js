@@ -5,4 +5,4 @@ class EmailInUseError {
   }
 }
 
-module.exports = EmailInUseError
+export default EmailInUseError

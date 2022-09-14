@@ -6,4 +6,4 @@ class ServerError {
   }
 }
 
-module.exports = ServerError
+export default ServerError

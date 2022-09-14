@@ -1,4 +1,4 @@
-module.exports = function CreateNFECustomerController(prismaClient) {
+export default function CreateNFECustomerController(prismaClient) {
   return async (request, response) => {
     try {
       const { CNPJ } = request.body;

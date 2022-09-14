@@ -5,4 +5,4 @@ class MissingParamError {
   }
 }
 
-module.exports = MissingParamError
+export default MissingParamError

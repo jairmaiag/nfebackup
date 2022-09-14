@@ -1,5 +1,7 @@
-const fs = require("fs");
-const quotedPrintable = require("quoted-printable");
+// const fs = require("fs");
+import fs from 'fs'
+import quotedPrintable from 'quoted-printable'
+// const quotedPrintable = require("quoted-printable");
 
 const meses = [
   "January",
@@ -16,7 +18,7 @@ const meses = [
   "December",
 ];
 
-function formatMesDiaAno(data) {
+export function formatMesDiaAno(data) {
   return `${meses[data.getMonth()]} ${data.getDate()}, ${data.getFullYear()}`;
 }
 
@@ -24,7 +26,7 @@ function toUpper(thing) {
   return thing && thing.toUpperCase ? thing.toUpperCase() : thing;
 }
 
-function isXml(attachment) {
+export function isXml(attachment) {
   return (
     (attachment.type === "text" || attachment.type === "application") &&
     attachment.subtype === "xml"
@@ -40,7 +42,7 @@ function streamToString(stream) {
   });
 }
 
-function findAttachmentParts(structs, attachments) {
+export function findAttachmentParts(structs, attachments) {
   attachments = attachments || [];
   structs.forEach((struct) => {
     if (Array.isArray(struct)) {
@@ -57,7 +59,7 @@ function findAttachmentParts(structs, attachments) {
   return attachments;
 }
 
-function buildAttMessageFunction(attachment, folderName) {
+export function buildAttMessageFunction(attachment, folderName) {
   const filename = attachment.params.name;
   const chaveNfe = filename.replace(/\D+/g, "");
 
@@ -121,18 +123,13 @@ function resultValidate(obj) {
   };
 }
 
-function montarMensagemJson(mensagem) {
-  return { mensagem: mensagem };
+export function montarMensagemJson(mensagem) {
+  return { mensagem };
 }
 
-module.exports = {
-  buildAttMessageFunction,
-  findAttachmentParts,
-  formatMesDiaAno,
-  isXml,
+/*module.exports = {
   streamToString,
   toUpper,
   validateField,
   resultValidate,
-  montarMensagemJson,
-};
+};*/

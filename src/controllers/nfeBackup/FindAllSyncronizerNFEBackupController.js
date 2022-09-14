@@ -1,8 +1,4 @@
-const {
-  serverError,
-  ok,
-  notFound,
-} = require("../../app/helpers/http/HttpHelpers");
+import httpHelper from '../../app/helpers/http/HttpHelpers.js'
 
 class FindAllSyncronizerNFEBackupController {
   constructor(prismaClient) {
@@ -24,12 +20,12 @@ class FindAllSyncronizerNFEBackupController {
           nfeLastDateRead: true,
         },
       });
-      return nfeBackups ? ok(nfeBackups) : notFound("Registro não encontrado");
+      return nfeBackups ? httpHelper.ok(nfeBackups) : httpHelper.notFound("Registro não encontrado");
     } catch (error) {
       console.log(error);
-      return serverError(error);
+      return httpHelper.serverError(error);
     }
   }
 }
 
-module.exports = FindAllSyncronizerNFEBackupController;
+export default FindAllSyncronizerNFEBackupController;

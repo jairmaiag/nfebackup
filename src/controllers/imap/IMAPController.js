@@ -1,11 +1,5 @@
-const Imap = require("imap");
-
-const {
-  buildAttMessageFunction,
-  findAttachmentParts,
-  formatMesDiaAno,
-  isXml,
-} = require("../../app/utils");
+import Imap from 'imap'
+import { buildAttMessageFunction, findAttachmentParts, formatMesDiaAno, isXml } from '../../app/utils.js'
 
 const imap = new Imap({
   tls: true,
@@ -78,4 +72,4 @@ imap.on("ready", function () {
   });
 });
 
-module.exports = { imap };
+export default imap

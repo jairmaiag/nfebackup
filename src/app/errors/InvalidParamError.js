@@ -5,4 +5,4 @@ class InvalidParamError {
   }
 }
 
-module.exports = InvalidParamError
+export default InvalidParamError

@@ -1,4 +1,4 @@
-module.exports = function CreateNFEBackupController(prismaClient) {
+export default function CreateNFEBackupController(prismaClient) {
   return async (request, response) => {
     try {
       const { nfeEmailUser } = request.body;
@@ -21,11 +21,14 @@ module.exports = function CreateNFEBackupController(prismaClient) {
         const nfeBackup = await prismaClient.NFEBackup.create({
           data,
         });
+        //TODO: usar httpHelper
         response.status(200).json(nfeBackup);
       } catch (error) {
+        //TODO: usar httpHelper
         response.status(400).json({ error: `${error}` });
       }
     } catch (error) {
+      //TODO: usar httpHelper
       response.status(500).json({ error: `${error}` });
     }
   };

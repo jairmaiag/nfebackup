@@ -1,27 +1,32 @@
-const { serverError, ok, notFound } = require("../../helpers/http/HttpHelpers");
+import httpHelper from "../../app/helpers/http/HttpHelpers.js"
 
-module.exports = async function FindAllSyncronizerNFECustomerController(
-  prismaClient
+export default async function FindAllSyncronizerNFECustomerController(
+  prismaClient,
+  id,
 ) {
   try {
-    const nfeCustomer = await prismaClient.NFECustomer.findMany({
+    const nfeCustomer = await prismaClient.customers.findMany({
       orderBy: {
-        id,
+        id: 'asc',
       },
       select: {
         id: true,
-        nfeLastDateRead: true,
-        nfeEmailUser: true,
-        nfeEmailPassword: true,
-        nfeEmailHost: true,
-        nfeEmailPort: true,
-        nfeLastDateRead: true,
-        inactive: true,
+        corporateName: true,
+        lastDateRead: true,
+        deletedAt: true,
+        mailboxes: {
+          select: {
+            email: true,
+            password: true,
+            host: true,
+            port: true
+          }
+        }
       },
     });
-    return nfeCustomer ? ok(nfeCustomer) : notFound("Registro não encontrado");
+    return nfeCustomer ? httpHelper.ok(nfeCustomer) : httpHelper.notFound("Registro não encontrado");
   } catch (error) {
     console.log(error);
-    return serverError(error);
+    return httpHelper.serverError(error);
   }
 };

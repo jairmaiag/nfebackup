@@ -1,4 +1,4 @@
-module.exports = function FindUniqueByCNPJEmailPasswordNFECustomer(
+export default function FindUniqueByCNPJEmailPasswordNFECustomer(
   prismaClient
 ) {
   return async (request, response) => {
@@ -6,7 +6,7 @@ module.exports = function FindUniqueByCNPJEmailPasswordNFECustomer(
       const { CNPJ, nfeEmailUser, nfeEmailPassword } = request.body;
 
       try {
-        const nfeCustomer = await prismaClient.NFECustomer.findFirst({
+        const nfeCustomer = await prismaClient.customers.findFirst({
           where: {
             AND: [
               {

@@ -1,25 +1,27 @@
-const { serverError, ok } = require("../../helpers/http/HttpHelpers");
+import httpHelper from '../../app/helpers/http/HttpHelpers.js'
 
-module.exports = async function UpdateSyncronizerNFECustomerController(
+const UpdateSyncronizerNFECustomerController = async (
   prismaClient,
-  id: Number
-) {
+  id
+) => {
   try {
-    const nfeCustomer = await prismaClient.NFECustomer.update({
+    const customer = await prismaClient.customers.update({
       where: {
         id,
       },
       data: {
-        nfeLastDateRead: Date.now(),
+        lastDateRead: Date.now(),
       },
       select: {
         id: true,
-        nfeLastDateRead: true,
+        lastDateRead: true,
       },
     });
-    return ok(nfeCustomer);
+    return httpHelper.ok(customer);
   } catch (error) {
     console.log(error);
-    return serverError(error);
+    return httpHelper.serverError(error);
   }
 };
+
+export default UpdateSyncronizerNFECustomerController

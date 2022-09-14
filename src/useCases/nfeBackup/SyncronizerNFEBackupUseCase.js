@@ -1,6 +1,5 @@
-const FindAllSyncronizerNFEBackupController = require("../../controllers/nfeBackup/FindAllSyncronizerNFEBackupController");
-const UpdateSyncronizerNFEBackupController = require("../../controllers/nfeBackup/UpdateSyncronizerNFEBackupController");
-const IMAPUseCase = require("../imap/ReadEmailUseCase");
+import { FindAllSyncronizerNFEBackupController, UpdateSyncronizerNFEBackupController } from '../../controllers/nfeBackup/index.js'
+import { ReadEmailUseCase as IMAPUseCase } from '../imap/index.js'
 
 class SyncronizerNFEBackupUseCase {
   constructor(prismaClient) {
@@ -49,4 +48,4 @@ class SyncronizerNFEBackupUseCase {
   }
 }
 
-module.exports = SyncronizerNFEBackupUseCase;
+export default SyncronizerNFEBackupUseCase;

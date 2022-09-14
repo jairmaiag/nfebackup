@@ -1,6 +1,7 @@
-const ServerError = require("../../errors/ServerError");
-const UnauthorizedError = require("../../errors/UnauthorizedError");
-const { montarMensagemJson } = require("../../utils");
+import ServerError from '../../errors/ServerError.js'
+import UnauthorizedError from "../../errors/UnauthorizedError.js"
+import { montarMensagemJson } from '../../utils.js'
+
 
 class httpHelpers {
   ok(data) {
@@ -57,4 +58,6 @@ class httpHelpers {
   }
 }
 
-module.exports = new httpHelpers();
+const httpHelper = new httpHelpers()
+
+export default httpHelper

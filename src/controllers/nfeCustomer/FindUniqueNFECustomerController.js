@@ -1,4 +1,4 @@
-module.exports = function FindUniqueNFECustomerController(prismaClient) {
+export default function FindUniqueNFECustomerController(prismaClient) {
   return async (request, response) => {
     try {
       const { id, cnpj } = request.params;
@@ -10,16 +10,16 @@ module.exports = function FindUniqueNFECustomerController(prismaClient) {
             id,
           },
           select: {
-            inactive: true,
+            deletedAt: true,
           },
         };
       } else if (cnpj) {
         queryArgs = {
           where: {
-            CNPJ: cnpj,
+            cnpj,
           },
           select: {
-            inactive: true,
+            deletedAt: true,
           },
         };
       } else {
@@ -30,7 +30,7 @@ module.exports = function FindUniqueNFECustomerController(prismaClient) {
       }
 
       try {
-        const nfeCustomer = await prismaClient.NFECustomer.findUniqueOrThrow(
+        const nfeCustomer = await prismaClient.customers.findUniqueOrThrow(
           queryArgs
         );
         response.status(200).json({ status: "success" });

@@ -1,11 +1,11 @@
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const express = require("express");
-const session = require("express-session");
+import bodyParser from "body-parser";
+import cors from 'cors'
+import express from 'express'
+import session from 'express-session'
 
-const mainRouter = require("./routes");
+import { mainRouter } from './routes.js'
 
-const app = express();
+export const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -22,5 +22,3 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(cors());
 app.use(mainRouter);
-
-module.exports = app;

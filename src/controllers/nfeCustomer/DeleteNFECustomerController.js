@@ -1,4 +1,4 @@
-module.exports = function DeleteNFECustomerController(prismaClient) {
+export default function DeleteNFECustomerController(prismaClient) {
   return async (request, response) => {
     try {
       prismaClient = new PrismaClient({
@@ -8,12 +8,12 @@ module.exports = function DeleteNFECustomerController(prismaClient) {
       const { cnpj } = request.params;
 
       try {
-        const nfeCustomer = await prismaClient.NFECustomer.delete({
+        const nfeCustomer = await prismaClient.customers.delete({
           where: {
-            CNPJ: cnpj,
+            cnpj,
           },
           select: {
-            inactive: true,
+            deletedAt: true,
           },
         });
 
