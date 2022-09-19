@@ -1,38 +1,37 @@
-import express from 'express'
+import express from "express";
 const router = express.Router();
-import prismaClient from "../database/prismaClient.js";
+import prismaClient from "../database/prisma-client.js";
 
+/* Customers routers */
 import {
-  CreateNFECustomerController as createNFECustomer,
-  UpdateNFECustomerController as updateNFECustomer,
-  FindUniqueByCNPJEmailPasswordNFECustomerController as findUniqueByCNPJEmailPasswordNFECustomer,
-  FindUniqueNFECustomerController as findUniqueNFECustomer,
-  DeleteNFECustomerController as deleteNFECustomer,
-  CreateNFECustomerController as createNFEBackup
-} from '../controllers/nfeCustomer/index.js'
+  CreateCustomerController as createCustomer,
+  FindUniqueCustomerController as findUniqueCustomer,
+  UpdateCustomerController as updateCustomer,
+  DeleteCustomerController as deleteCustomer,
+  ValidateCNPJEmailPasswordCustomerController as validateCNPJEmailPasswordCustomer,
+  CustomerSyncronizerController as customerSyncronizer,
+} from "../controllers/customer/index.js";
 
-import { NFEBackupSyncronizerUseCase as nfeBackupSyncronizer } from "../useCases/nfeBackup/index.js"
-
-// const createNFECustomer = require("../controllers/nfeCustomer/CreateNFECustomerController");
-// const updateNFECustomer = require("../controllers/nfeCustomer/UpdateNFECustomerController");
-// const findUniqueNFECustomer = require("../controllers/nfeCustomer/FindUniqueNFECustomerController");
-// const findUniqueByCNPJEmailPasswordNFECustomer = require("../controllers/nfeCustomer/FindUniqueByCNPJEmailPasswordNFECustomerController");
-// const deleteNFECustomer = require("../controllers/nfeCustomer/DeleteNFECustomerController");
-// const createNFEBackup = require("../controllers/nfeBackup/CreateNFEBackupController");
-
-router.post("/nfeCustomer", createNFECustomer(prismaClient));
-router.put("/nfeCustomer", updateNFECustomer(prismaClient));
-router.get("/nfeCustomer/cnpj/:cnpj", findUniqueNFECustomer(prismaClient));
+router.post("/customer", createCustomer(prismaClient));
+router.put("/customer", updateCustomer(prismaClient));
+router.get("/customer/cnpj/:cnpj", findUniqueCustomer(prismaClient));
 router.post(
-  "/nfeCustotmerValidate",
-  findUniqueByCNPJEmailPasswordNFECustomer(prismaClient)
+  "/custotmerValidate",
+  validateCNPJEmailPasswordCustomer(prismaClient)
 );
-router.post("/nfeBackup", createNFEBackup(prismaClient));
+/* Executing Customer Syncronization by Windows Task Scheduler */
+router.post("/customerSyncronizer", customerSyncronizer(prismaClient));
 
-/* Executando NFE Backup pelo Windows Task Scheduler */
-router.post("/nfeBackupSyncronizer", nfeBackupSyncronizer(prismaClient));
+/* Institutions routers */
+import { InstitutionSyncronizerController as institutionsSyncronizer } from "../controllers/institution/index.js";
+
+import { CreateNFEBackupController as createInstitution } from "../controllers/institution/index.js";
+
+router.post("/institution", createInstitution(prismaClient));
+/* Executing Institution Syncronization by Windows Task Scheduler */
+router.post("/institutionSyncronizer", institutionsSyncronizer(prismaClient));
 
 /* Rotas que não serão usadas por enquanto */
-// router.get("/nfeCustomer/id/:id", findUniqueNFECustomer(prismaClient));
-// router.delete("/nfeCustomer/cnpj/:cnpj", deleteNFECustomer(prismaClient));
-export const mainRouter = router
+// router.get("/customer/id/:id", findUniqueCustomer(prismaClient));
+// router.delete("/customer/cnpj/:cnpj", deleteCustomer(prismaClient));
+export const mainRouter = router;

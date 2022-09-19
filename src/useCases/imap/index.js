@@ -1,1 +1,2 @@
-export { default as ReadEmailUseCase } from './ReadEmailUseCase.js'
+export { default as IMAPReadEmailUseCase } from "./read-email-usecase.js";
+export { default as IMAPUseCase } from "./imap-usecase.js";

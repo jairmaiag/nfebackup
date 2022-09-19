@@ -9,45 +9,46 @@ datasource db {
 
 model addresses {
   id            Int            @id(map: "addresses_pk") @default(autoincrement())
-  street        String?        @db.VarChar(250)
-  addressNumber String?        @db.VarChar(250)
-  zipCode       String?        @db.VarChar(8)
-  district      String?        @db.VarChar(50)
-  cityId        Int
-  cities        cities         @relation(fields: [cityId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "addresses_cities_fk")
+  street        String         @db.VarChar(250)
+  addressNumber String?        @db.VarChar(50)
+  zipCode       String         @db.VarChar(8)
+  neighborhood  String         @db.VarChar(250)
+  complement    String?        @db.VarChar(250)
+  cityName      String         @db.VarChar(250)
+  state         states
+  country       String         @default("BRASIL") @db.VarChar(100)
   customers     customers[]
   institutions  institutions[]
-}
-
-model cities {
-  id        Int         @id(map: "cities_pk") @default(autoincrement())
-  name      String      @db.VarChar(250)
-  state     states?
-  addresses addresses[]
 }
 
 model customers {
   id                     Int                      @id(map: "customers_pk") @default(autoincrement())
   corporateName          String                   @db.VarChar(250)
-  fantasyName            String?                  @db.VarChar(250)
-  cnpj                   String?                  @db.VarChar(15)
-  lastDateRead           DateTime?                @db.Timestamp(6)
+  fantasyName            String                   @db.VarChar(250)
+  CNPJ                   String                   @unique @db.VarChar(14)
+  email01                String                   @db.VarChar(100)
+  DDI01                  String                   @db.VarChar(5)
+  DDD01                  String                   @db.VarChar(5)
+  phoneNumber01          String                   @db.VarChar(15)
+  DDI02                  String?                  @db.VarChar(5)
+  DDD02                  String?                  @db.VarChar(5)
+  phoneNumber02          String?                  @db.VarChar(15)
   createdAt              DateTime                 @default(now()) @db.Timestamp(6)
   updatedAt              DateTime?                @db.Timestamp(6)
   deletedAt              DateTime?                @db.Timestamp(6)
   mailboxId              Int
-  addressId              Int?
-  addresses              addresses?               @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_addresses_fk")
+  addressId              Int
+  addresses              addresses                @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_addresses_fk")
   mailboxes              mailboxes                @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_mailboxes_fk")
   institutions_customers institutions_customers[]
 }
 
 model institutions {
   id                     Int                      @id(map: "institutions_pk") @default(autoincrement())
-  name                   String?                  @db.VarChar(250)
+  name                   String                   @db.VarChar(250)
   mailboxId              Int
-  addressId              Int?
-  addresses              addresses?               @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_addresses_fk")
+  addressId              Int
+  addresses              addresses                @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_addresses_fk")
   mailboxes              mailboxes                @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_mailboxes_fk")
   institutions_customers institutions_customers[]
 }
@@ -62,12 +63,12 @@ model institutions_customers {
 
 model mailboxes {
   id           Int            @id(map: "mailboxes_pk") @default(autoincrement())
-  host         String         @db.VarChar(250)
-  password     String         @db.VarChar(250)
-  port         Int            @db.SmallInt
-  email        String         @db.VarChar(250)
-  lastDateRead Int?
-  createdAt    DateTime?      @default(now()) @db.Timestamp(6)
+  host         String         @db.VarChar(100)
+  password     String         @db.VarChar(50)
+  port         String         @db.VarChar(5)
+  email        String         @db.VarChar(100)
+  lastDateRead DateTime?      @db.Timestamp(6)
+  createdAt    DateTime       @default(now()) @db.Timestamp(6)
   updatedAt    DateTime?      @db.Timestamp(6)
   deletedAt    DateTime?      @db.Timestamp(6)
   customers    customers[]

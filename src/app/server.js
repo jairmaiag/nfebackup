@@ -1,9 +1,9 @@
 import bodyParser from "body-parser";
-import cors from 'cors'
-import express from 'express'
-import session from 'express-session'
-
-import { mainRouter } from './routes.js'
+import cors from "cors";
+import express from "express";
+import session from "express-session";
+import { mainRouter } from "./routes.js";
+import ErrorHandler from "./middlewares/error-handler.js";
 
 export const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,3 +22,4 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(cors());
 app.use(mainRouter);
+app.use(ErrorHandler);
