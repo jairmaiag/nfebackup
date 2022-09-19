@@ -18,7 +18,8 @@ class InstitutionSyncronizerUseCase {
       for (const institution of institutions) {
         institution.mailboxes[0].user = institution.mailboxes[0].email;
         /* "2022-09-07T03:00:00.000+00:00" */
-        institution.mailboxes[0].searchDate = new Date();
+        institution.mailboxes[0].searchDate =
+          institution.mailboxes[0].lastDateRead;
         institution.mailboxes[0].folderName = "emitidas";
 
         console.log(`Consultando : ${institution.mailboxes[0].email}`);

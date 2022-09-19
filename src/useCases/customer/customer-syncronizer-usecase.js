@@ -16,8 +16,9 @@ class CustomerSyncronizerUseCase {
       for (const customer of customers) {
         customer.mailboxes[0].user = customer.mailboxes[0].email;
         /* "2022-09-07T03:00:00.000+00:00" */
-        customer.mailboxes[0].searchDate = new Date();
-        customer.mailboxes[0].folderName = "emitidas";
+        customer.mailboxes[0].searchDate =
+          institution.mailboxes[0].lastDateRead;
+        customer.mailboxes[0].folderName = "recebidas";
 
         console.log(`Consultando : ${customer.mailboxes[0].email}`);
 
