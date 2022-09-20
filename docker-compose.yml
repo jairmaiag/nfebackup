@@ -1,0 +1,11 @@
+version: "3.9" 
+
+services:
+  nfebackup:
+    build: .
+    ports:
+      - "3000:3001"
+    restart: always
+    env_file: 
+      - .env
+

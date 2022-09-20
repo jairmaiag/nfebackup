@@ -1,0 +1,8 @@
+dockerfile
+.vscode
+.editorcnfig
+.env*
+.gitignore
+dockerfile*
+docker-compose*
+README.md
