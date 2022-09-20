@@ -37,8 +37,7 @@ class CustomerSyncronizerUseCase {
         "retornar lista de emails consultados e atualizados ou não atualizados"
       );
     } catch (error) {
-      console.log(error);
-      // next(error);
+      throw error;
     }
   }
 }

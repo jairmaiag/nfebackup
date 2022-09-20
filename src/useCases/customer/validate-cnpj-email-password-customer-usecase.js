@@ -29,8 +29,7 @@ class ValidateCNPJEmailPasswordCustomerUseCase {
 
       return customer;
     } catch (error) {
-      console.log(error);
-      // next(error);
+      throw error;
     }
   }
 }

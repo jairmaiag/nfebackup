@@ -29,8 +29,7 @@ class UpdateCustomerUseCase {
 
       return updatedCustomer;
     } catch (error) {
-      console.log(error);
-      // next(error);
+      throw error;
     }
   }
 }

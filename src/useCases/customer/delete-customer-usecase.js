@@ -17,8 +17,7 @@ class DeleteCustomerUseCase {
       const deletedCustomer = await customerRepository.delete(cnpj);
       return deletedCustomer;
     } catch (error) {
-      console.log(error);
-      // next(error);
+      throw error;
     }
   }
 }

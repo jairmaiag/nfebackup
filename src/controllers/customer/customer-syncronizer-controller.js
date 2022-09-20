@@ -9,7 +9,6 @@ const CustomerSyncronizerController = (prismaClient) => {
 
       await customerSyncronizerUseCase.handle();
     } catch (error) {
-      console.log(error);
       next(error);
     }
   };

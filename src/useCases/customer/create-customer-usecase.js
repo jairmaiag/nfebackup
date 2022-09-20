@@ -18,7 +18,7 @@ class CreateCustomerUseCase {
       const customer = await customerRepository.findUnique(data.CNPJ);
 
       if (customer) {
-        throw new AppError("Customer already exists", 401);
+        throw new AppError("Customer already exist", 401);
       }
 
       const newCustomer = await customerRepository.create(
@@ -29,8 +29,7 @@ class CreateCustomerUseCase {
 
       return newCustomer;
     } catch (error) {
-      console.log(error);
-      // next(error);
+      throw error;
     }
   }
 }

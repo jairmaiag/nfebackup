@@ -9,8 +9,7 @@ const UpdateCustomerController = (prismaClient) => {
         response.status(200).json({ status: "success" });
       }
     } catch (error) {
-      console.log(error);
-      // next(error);
+      next(error);
     }
   };
 };
