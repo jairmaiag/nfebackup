@@ -1,11 +1,17 @@
-FROM node:16-alpine
+FROM node:16-alpine as BUILDER
 
 WORKDIR /app
 COPY . .
 
-RUN npm install
+RUN npm install . \
+    && npm run build \
+    && npm cache clean --force
 
-RUN npm run build
+
+FROM node:16-alpine as final
+
+WORKDIR /app
+COPY --from=BUILDER /app .
 
 ENTRYPOINT ["npm"]
 CMD ["run", "start"]
