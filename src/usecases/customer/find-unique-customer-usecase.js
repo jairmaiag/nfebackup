@@ -7,21 +7,17 @@ class FindUniqueCustomerUseCase {
   }
 
   async handle(request) {
-    try {
-      const { id, cnpj } = request.params;
+    const { id, cnpj } = request.params;
 
-      const customerRepository = new CustomerRepository(this.prismaClient);
+    const customerRepository = new CustomerRepository(this.prismaClient);
 
-      const customer = await customerRepository.findUnique(cnpj, id);
+    const customer = await customerRepository.findUnique(cnpj, id);
 
-      if (!customer) {
-        throw new AppError("Customer not found", 404);
-      }
-
-      return customer;
-    } catch (error) {
-      throw error;
+    if (!customer) {
+      throw new AppError("Customer not found", 404);
     }
+
+    return customer;
   }
 }
 

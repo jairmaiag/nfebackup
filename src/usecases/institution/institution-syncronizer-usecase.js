@@ -7,39 +7,34 @@ class InstitutionSyncronizerUseCase {
   }
 
   async handle() {
-    try {
-      const imapUseCase = new imapReadEmail();
-      const institutionRepository = new InstitutionRepository(
-        this.prismaClient
+    const imapUseCase = new imapReadEmail();
+    const institutionRepository = new InstitutionRepository(this.prismaClient);
+
+    const institutions = await institutionRepository.findMany();
+
+    for (const institution of institutions) {
+      institution.mailboxes[0].user = institution.mailboxes[0].email;
+      /* "2022-09-07T03:00:00.000+00:00" */
+      institution.mailboxes[0].searchDate =
+        institution.mailboxes[0].lastDateRead;
+      institution.mailboxes[0].folderName = "emitidas";
+
+      console.log(`Consultando : ${institution.mailboxes[0].email}`);
+
+      const imapResult = await imapUseCase.handle(institution.mailboxes[0]);
+
+      const institutionUpdated = await institutionRepository.updateSincronizer(
+        institution.id
       );
 
-      const institutions = await institutionRepository.findMany();
+      console.log(`E-mail consultado : ${institution.mailboxes[0].email}`);
 
-      for (const institution of institutions) {
-        institution.mailboxes[0].user = institution.mailboxes[0].email;
-        /* "2022-09-07T03:00:00.000+00:00" */
-        institution.mailboxes[0].searchDate =
-          institution.mailboxes[0].lastDateRead;
-        institution.mailboxes[0].folderName = "emitidas";
-
-        console.log(`Consultando : ${institution.mailboxes[0].email}`);
-
-        const imapResult = await imapUseCase.handle(institution.mailboxes[0]);
-
-        const institutionUpdated =
-          await institutionRepository.updateSincronizer(institution.id);
-
-        console.log(`E-mail consultado : ${institution.mailboxes[0].email}`);
-
-        console.log(imap);
-      }
-
-      console.log(
-        "retornar lista de emails consultados e atualizados ou não atualizados"
-      );
-    } catch (error) {
-      throw error;
+      console.log(imap);
     }
+
+    console.log(
+      "retornar lista de emails consultados e atualizados ou não atualizados"
+    );
   }
 }
 

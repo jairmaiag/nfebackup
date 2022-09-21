@@ -7,18 +7,14 @@ class DeleteCustomerUseCase {
   }
 
   async handle(request) {
-    try {
-      const { cnpj } = request.params;
-      const customerRepository = new CustomerRepository(this.prismaClient);
-      const customer = await customerRepository.findUnique(cnpj);
-      if (!customer) {
-        throw new AppError("Customer not found", 404);
-      }
-      const deletedCustomer = await customerRepository.delete(cnpj);
-      return deletedCustomer;
-    } catch (error) {
-      throw error;
+    const { cnpj } = request.params;
+    const customerRepository = new CustomerRepository(this.prismaClient);
+    const customer = await customerRepository.findUnique(cnpj);
+    if (!customer) {
+      throw new AppError("Customer not found", 404);
     }
+    const deletedCustomer = await customerRepository.delete(cnpj);
+    return deletedCustomer;
   }
 }
 
