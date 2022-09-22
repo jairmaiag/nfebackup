@@ -25,13 +25,11 @@ router.post("/customerSyncronizer", customerSyncronizer(prismaClient));
 /* Institutions routers */
 import { InstitutionSyncronizerController as institutionsSyncronizer } from "../controllers/institution/index.js";
 
-import { CreateNFEBackupController as createInstitution } from "../controllers/institution/index.js";
-
-router.post("/institution", createInstitution(prismaClient));
 /* Executing Institution Syncronization by Windows Task Scheduler */
 router.post("/institutionSyncronizer", institutionsSyncronizer(prismaClient));
 
 /* Rotas que não serão usadas por enquanto */
 // router.get("/customer/id/:id", findUniqueCustomer(prismaClient));
 // router.delete("/customer/cnpj/:cnpj", deleteCustomer(prismaClient));
+
 export const mainRouter = router;

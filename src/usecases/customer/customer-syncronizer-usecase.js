@@ -13,22 +13,21 @@ class CustomerSyncronizerUseCase {
     const customers = await customerRepository.findMany();
 
     for (const customer of customers) {
-      customer.mailboxes[0].user = customer.mailboxes[0].email;
+      customer.mailboxes.user = customer.mailboxes.email;
       /* "2022-09-07T03:00:00.000+00:00" */
-      customer.mailboxes[0].searchDate = institution.mailboxes[0].lastDateRead;
-      customer.mailboxes[0].folderName = "recebidas";
+      customer.mailboxes.searchDate = institution.mailboxes.lastDateRead;
+      customer.mailboxes.folderName = "recebidas";
 
-      console.log(`Consultando : ${customer.mailboxes[0].email}`);
+      console.log(`Consultando : ${customer.mailboxes.email}`);
 
-      const imapResult = await imapUseCase.handle(customer.mailboxes[0]);
+      const imapResult = await imapUseCase.handle(customer.mailboxes);
+      if (imapResult) {
+        const institutionUpdated = await customerRepository.updateSincronizer(
+          customer.id
+        );
+      }
 
-      const institutionUpdated = await customerRepository.updateSincronizer(
-        customer.id
-      );
-
-      console.log(`E-mail consultado : ${customer.mailboxes[0].email}`);
-
-      console.log(imap);
+      console.log(`E-mail consultado : ${customer.mailboxes.email}`);
     }
 
     console.log(

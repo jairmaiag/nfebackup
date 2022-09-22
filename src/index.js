@@ -2,7 +2,6 @@ import "dotenv/config";
 
 import { app } from "./app/server.js";
 
-// const app = require("./app/server");
 const port = process.env.PORT || 80;
 
 app.listen(port, async function () {

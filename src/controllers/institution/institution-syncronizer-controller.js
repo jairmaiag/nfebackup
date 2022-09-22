@@ -8,6 +8,7 @@ const InstitutionSyncronizerController = (prismaClient) => {
       );
 
       await institutionSyncronizerUseCase.handle();
+      response.status(200).json({ status: "success" });
     } catch (error) {
       console.log(error);
       next(error);

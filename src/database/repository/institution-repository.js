@@ -6,7 +6,7 @@ class InstitutionRepository {
   }
 
   async findUnique(id) {
-    const institution = await this.prismaClient.institution.findUnique({
+    const institution = await this.prismaClient.institutions.findUnique({
       where: {
         id,
       },
@@ -20,7 +20,7 @@ class InstitutionRepository {
   }
 
   async create(data, mailboxes, addresses) {
-    const institution = await this.prismaClient.institution.create({
+    const institution = await this.prismaClient.institutions.create({
       data: {
         ...data,
         mailboxes: {
@@ -36,7 +36,7 @@ class InstitutionRepository {
   }
 
   async update(data, mailboxes, addresses) {
-    const institution = await this.prismaClient.institution.update({
+    const institution = await this.prismaClient.institutions.update({
       where: {
         id: data.id,
       },
@@ -55,7 +55,7 @@ class InstitutionRepository {
   }
 
   async updateSincronizer(id) {
-    const institution = await this.prismaClient.institution.update({
+    const institution = await this.prismaClient.institutions.update({
       where: {
         id,
       },
@@ -74,12 +74,9 @@ class InstitutionRepository {
   }
 
   async findMany() {
-    const institutions = await this.prismaClient.institution.findMany({
+    const institutions = await this.prismaClient.institutions.findMany({
       orderBy: {
         id: "asc",
-      },
-      where: {
-        NOT: [{ deletedAt: null }],
       },
       select: {
         id: true,

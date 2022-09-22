@@ -21,40 +21,45 @@ const imap = new Imap({
 imap.on("ready", function () {
   imap.openBox("INBOX", true, function (err, box) {
     if (err) {
-      console.log("Error WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
-      // throw err;
+      throw err;
     }
+
     const defaultDate = process.env.DEFAULT_DATE;
     const searchDate = formatMesDiaAno(
       new Date(imap._config.searchDate || defaultDate)
     );
     imap.qtdNfe = 0;
     imap.qtdEmail = 0;
+
     imap.search(
       [["OR", "UNSEEN", ["SINCE", searchDate]]],
       function (err, results) {
         if (err) {
-          console.log("Error XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-          // throw err;
+          throw err;
+        }
+
+        if (results.length === 0) {
+          imap.end();
+          return;
         }
 
         imap.qtdEmail += results.length;
-        const imapFetch = imap.fetch(results, {
+        const emailsFetch = imap.fetch(results, {
           bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
           struct: true,
         });
 
-        imapFetch.on("message", function (msg, seqno) {
+        emailsFetch.on("message", function (msg, seqno) {
           msg.on("attributes", function (attrs) {
             const attachments = findAttachmentParts(attrs.struct);
             imap.qtdNfe += attachments.length;
             attachments.forEach((attachment) => {
               if (isXml(attachment)) {
-                const fetch = imap.fetch(attrs.uid, {
+                const emailFetchByUID = imap.fetch(attrs.uid, {
                   bodies: [attachment.partID],
                   struct: true,
                 });
-                fetch.on(
+                emailFetchByUID.on(
                   "message",
                   buildAttMessageFunction(attachment, imap._config.folderName)
                 );
@@ -63,13 +68,11 @@ imap.on("ready", function () {
           });
         });
 
-        imapFetch.on("error", function (err) {
-          console.error(
-            "Fetch error DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD: " + err
-          );
+        emailsFetch.on("error", function (err) {
+          console.error("Fetch error: " + err);
         });
 
-        imapFetch.on("end", function () {
+        emailsFetch.on("end", function () {
           imap.end();
         });
       }

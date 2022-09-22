@@ -7,34 +7,34 @@ class InstitutionSyncronizerUseCase {
   }
 
   async handle() {
-    const imapUseCase = new imapReadEmail();
-    const institutionRepository = new InstitutionRepository(this.prismaClient);
-
-    const institutions = await institutionRepository.findMany();
-
-    for (const institution of institutions) {
-      institution.mailboxes[0].user = institution.mailboxes[0].email;
-      /* "2022-09-07T03:00:00.000+00:00" */
-      institution.mailboxes[0].searchDate =
-        institution.mailboxes[0].lastDateRead;
-      institution.mailboxes[0].folderName = "emitidas";
-
-      console.log(`Consultando : ${institution.mailboxes[0].email}`);
-
-      const imapResult = await imapUseCase.handle(institution.mailboxes[0]);
-
-      const institutionUpdated = await institutionRepository.updateSincronizer(
-        institution.id
+    try {
+      const imapUseCase = new imapReadEmail();
+      const institutionRepository = new InstitutionRepository(
+        this.prismaClient
       );
 
-      console.log(`E-mail consultado : ${institution.mailboxes[0].email}`);
+      const institutions = await institutionRepository.findMany();
 
-      console.log(imap);
+      for (const institution of institutions) {
+        institution.mailboxes.user = institution.mailboxes.email;
+        /* "2022-09-07T03:00:00.000+00:00" */
+        institution.mailboxes.searchDate = institution.mailboxes.lastDateRead;
+        institution.mailboxes.folderName = "emitidas";
+
+        const imapResult = await imapUseCase.handle(institution.mailboxes);
+        if (imapResult) {
+          const institutionUpdated =
+            await institutionRepository.updateSincronizer(institution.id);
+        }
+      }
+
+      console.log(
+        "retornar lista de emails consultados e atualizados ou não atualizados"
+      );
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
-
-    console.log(
-      "retornar lista de emails consultados e atualizados ou não atualizados"
-    );
   }
 }
 
