@@ -1,5 +1,5 @@
 import { CustomerRepository } from "../../database/repository/index.js";
-import { IMAPReadEmailUseCase as imapReadEmail } from "../imap/index.js";
+import { IMAPUseCase as IMAP } from "../imap/index.js";
 
 class CustomerSyncronizerUseCase {
   constructor(prismaClient) {
@@ -7,10 +7,11 @@ class CustomerSyncronizerUseCase {
   }
 
   async handle() {
-    const imapUseCase = new imapReadEmail();
+    const imapUseCase = new IMAP();
     const customerRepository = new CustomerRepository(this.prismaClient);
 
-    const customers = await customerRepository.findMany();
+    const inactive = true;
+    const customers = await customerRepository.findMany(inactive);
 
     for (const customer of customers) {
       customer.mailboxes.user = customer.mailboxes.email;

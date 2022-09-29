@@ -33,9 +33,9 @@ model customers {
   DDI02                  String?                  @db.VarChar(5)
   DDD02                  String?                  @db.VarChar(5)
   phoneNumber02          String?                  @db.VarChar(15)
+  inactive               Boolean                  @default(false)
   createdAt              DateTime                 @default(now()) @db.Timestamp(6)
-  updatedAt              DateTime?                @db.Timestamp(6)
-  deletedAt              DateTime?                @db.Timestamp(6)
+  updatedAt              DateTime?                @updatedAt @db.Timestamp(6)
   mailboxId              Int
   addressId              Int
   addresses              addresses                @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_addresses_fk")
@@ -68,9 +68,9 @@ model mailboxes {
   port         String         @db.VarChar(5)
   email        String         @db.VarChar(100)
   lastDateRead DateTime?      @db.Timestamp(6)
+  inactive     Boolean        @default(false)
   createdAt    DateTime       @default(now()) @db.Timestamp(6)
-  updatedAt    DateTime?      @db.Timestamp(6)
-  deletedAt    DateTime?      @db.Timestamp(6)
+  updatedAt    DateTime?      @updatedAt @db.Timestamp(6)
   customers    customers[]
   institutions institutions[]
 }

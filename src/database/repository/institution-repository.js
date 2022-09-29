@@ -62,9 +62,7 @@ class InstitutionRepository {
       data: {
         mailboxes: {
           update: {
-            data: {
-              lastDateRead: new Date(),
-            },
+            lastDateRead: new Date(),
           },
         },
       },
@@ -73,10 +71,15 @@ class InstitutionRepository {
     return institution;
   }
 
-  async findMany() {
+  async findMany(inactive) {
     const institutions = await this.prismaClient.institutions.findMany({
       orderBy: {
         id: "asc",
+      },
+      where: {
+        mailboxes: {
+          inactive,
+        },
       },
       select: {
         id: true,
@@ -86,6 +89,8 @@ class InstitutionRepository {
             password: true,
             host: true,
             port: true,
+            lastDateRead: true,
+            inactive: true,
           },
         },
       },

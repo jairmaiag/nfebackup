@@ -1,7 +1,5 @@
-// const fs = require("fs");
-import fs from 'fs'
-import quotedPrintable from 'quoted-printable'
-// const quotedPrintable = require("quoted-printable");
+import fs from "fs";
+import quotedPrintable from "quoted-printable";
 
 const meses = [
   "January",
@@ -126,10 +124,3 @@ function resultValidate(obj) {
 export function montarMensagemJson(mensagem) {
   return { mensagem };
 }
-
-/*module.exports = {
-  streamToString,
-  toUpper,
-  validateField,
-  resultValidate,
-};*/

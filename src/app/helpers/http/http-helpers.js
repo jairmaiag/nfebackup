@@ -1,7 +1,6 @@
-import ServerError from '../../errors/ServerError.js'
-import UnauthorizedError from "../../errors/UnauthorizedError.js"
-import { montarMensagemJson } from '../../utils.js'
-
+import ServerError from "../../errors/ServerError.js";
+import UnauthorizedError from "../../errors/UnauthorizedError.js";
+import { montarMensagemJson } from "../../utils/utils.js";
 
 class httpHelpers {
   ok(data) {
@@ -58,6 +57,6 @@ class httpHelpers {
   }
 }
 
-const httpHelper = new httpHelpers()
+const httpHelper = new httpHelpers();
 
-export default httpHelper
+export default httpHelper;

@@ -32,7 +32,7 @@ class CustomerRepository {
     return customer;
   }
 
-  async create(data, mailboxes, addresses) {
+  async create(data, mailboxes, addresses, institutions_customers) {
     const customer = await this.prismaClient.customers.create({
       data: {
         ...data,
@@ -43,9 +43,7 @@ class CustomerRepository {
           create: addresses,
         },
         institutions_customers: {
-          create: {
-            institutionId: 2,
-          },
+          create: institutions_customers,
         },
       },
     });
@@ -90,9 +88,7 @@ class CustomerRepository {
       data: {
         mailboxes: {
           update: {
-            data: {
-              lastDateRead: new Date(),
-            },
+            lastDateRead: new Date(),
           },
         },
       },
@@ -101,13 +97,13 @@ class CustomerRepository {
     return customers;
   }
 
-  async findMany() {
+  async findMany(inactive) {
     const customers = await this.prismaClient.customers.findMany({
       orderBy: {
         id: "asc",
       },
       where: {
-        NOT: [{ deletedAt: null }],
+        inactive,
       },
       select: {
         id: true,
