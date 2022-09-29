@@ -1,4 +1,3 @@
-import nodemailer from "nodemailer";
 import { AppError } from "../../app/helpers/app-error.js";
 import { InstitutionRepository } from "../../database/repository/index.js";
 import { IMAPUseCase as IMAP } from "../imap/index.js";
