@@ -103,7 +103,9 @@ class CustomerRepository {
         id: "asc",
       },
       where: {
-        inactive,
+        mailboxes: {
+          inactive,
+        },
       },
       select: {
         id: true,
@@ -113,6 +115,8 @@ class CustomerRepository {
             password: true,
             host: true,
             port: true,
+            lastDateRead: true,
+            inactive: true,
           },
         },
       },

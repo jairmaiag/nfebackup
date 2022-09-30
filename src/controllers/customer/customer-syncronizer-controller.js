@@ -8,6 +8,7 @@ const CustomerSyncronizerController = (prismaClient) => {
       );
 
       await customerSyncronizerUseCase.handle();
+      response.status(200).json({ status: "success" });
     } catch (error) {
       next(error);
     }
