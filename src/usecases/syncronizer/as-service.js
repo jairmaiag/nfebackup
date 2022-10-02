@@ -1,6 +1,6 @@
-const prismaClient = require("../../database/prisma-client.js");
-const dotenv = require("dotenv");
-dotenv.config();
+import prismaClient from "../../database/prisma-client.js";
+import "dotenv/config";
+
 import { InstitutionSyncronizerUseCase } from "../institution/index.js";
 import { CustomerSyncronizerUseCase } from "../customer/index.js";
 

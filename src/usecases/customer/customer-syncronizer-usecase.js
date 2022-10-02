@@ -11,7 +11,8 @@ class CustomerSyncronizerUseCase {
       const customerRepository = new CustomerRepository(this.prismaClient);
       const syncronizerUseCase = new SyncronizerUseCase(
         customerRepository,
-        "recebidas"
+        "recebidas",
+        "Deleted"
       );
       await syncronizerUseCase.handle();
     } catch (error) {

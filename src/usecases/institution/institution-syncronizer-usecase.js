@@ -13,7 +13,8 @@ class InstitutionSyncronizerUseCase {
       );
       const syncronizerUseCase = new SyncronizerUseCase(
         institutionRepository,
-        "emitidas"
+        "emitidas",
+        "Deleted"
       );
       await syncronizerUseCase.handle();
     } catch (error) {

@@ -19,10 +19,10 @@ export default class IMAPUseCase {
     };
   }
 
-  async handle(objData) {
+  async handle(entityMailbox) {
     await new Promise((resolve, reject) => {
       const imap = new Imap(this._config);
-      imap._config = { ...imap._config, ...objData };
+      imap._config = { ...imap._config, ...entityMailbox };
 
       imap.once("ready", () => {
         imap.openBox("INBOX", false, (err, box) => {
@@ -31,10 +31,8 @@ export default class IMAPUseCase {
           }
           const defaultDate = process.env.DEFAULT_DATE;
           const searchDate = formatMesDiaAno(
-            new Date(imap._config.searchDate || defaultDate)
+            new Date(entityMailbox.searchDate || defaultDate)
           );
-          imap.quantityNFEDownloaded = 0;
-          imap.quantityEmailRead = 0;
           imap.search(
             [["OR", "UNSEEN", ["SINCE", searchDate]]],
             function (err, results) {
@@ -47,18 +45,31 @@ export default class IMAPUseCase {
                 return;
               }
 
-              imap.quantityEmailRead += results.length;
+              entityMailbox.quantityEmailRead += results.length;
               const emailsFetch = imap.fetch(results, {
                 bodies: ["HEADER.FIELDS (FROM TO SUBJECT DATE)"],
                 struct: true,
               });
 
-              emailsFetch.on("message", function (msg, seqno) {
-                msg.on("attributes", function (attrs) {
+              emailsFetch.on("message", function (emailMessage, seqno) {
+                emailMessage.on("attributes", function (attrs) {
+                  /* Check if attrs.flags contains entityMailbox.emailFlag
+                  if yes, then return and do not process this email further */
+                  const emailFlag = entityMailbox.emailFlag.startsWith("\\")
+                    ? entityMailbox.emailFlag
+                    : `\\${entityMailbox.emailFlag}`;
+                  if (attrs.flags.includes(emailFlag)) {
+                    return;
+                  }
                   const attachments = findAttachmentParts(attrs.struct);
-                  imap.quantityNFEDownloaded += attachments.length;
-                  attachments.forEach((attachment) => {
-                    if (isXml(attachment)) {
+                  if (attachments.length === 0) {
+                    return;
+                  }
+                  entityMailbox.quantityNFEDownloaded += attachments.length;
+
+                  attachments
+                    .filter((attac) => isXml(attac))
+                    .forEach((attachment) => {
                       const emailFetchByUID = imap.fetch(attrs.uid, {
                         bodies: [attachment.partID],
                         struct: true,
@@ -67,11 +78,24 @@ export default class IMAPUseCase {
                         "message",
                         buildAttMessageFunction(
                           attachment,
-                          imap._config.folderName
+                          entityMailbox.folderName
                         )
                       );
+                    });
+
+                  // Work to gmail. But does not work to another email providers
+                  imap.addFlags(
+                    attrs.uid,
+                    entityMailbox.emailFlag,
+                    function (err) {
+                      if (err) {
+                        console.log(
+                          `Error on addFlags: ${entityMailbox.emailFlag}`,
+                          err
+                        );
+                      }
                     }
-                  });
+                  );
                 });
               });
 

@@ -3,9 +3,10 @@ import { IMAPUseCase as IMAP } from "../imap/index.js";
 import { Email } from "../../app/utils/email.js";
 
 class SyncronizerUseCase {
-  constructor(repository, folderName) {
+  constructor(repository, folderName, emailFlag) {
     this.repository = repository;
     this.folderName = folderName;
+    this.emailFlag = emailFlag;
   }
 
   async handle() {
@@ -16,24 +17,29 @@ class SyncronizerUseCase {
       const inactive = false;
       entities = await this.repository.findMany(inactive);
 
-      for (const institution of entities) {
+      for (const entity of entities) {
         try {
-          institution.mailboxes.user = institution.mailboxes.email;
+          console.log("entity.mailboxes.email", entity.mailboxes.email);
+          entity.mailboxes.user = entity.mailboxes.email;
           /* "2022-09-07T03:00:00.000+00:00" */
-          institution.mailboxes.searchDate = institution.mailboxes.lastDateRead;
-          institution.mailboxes.folderName = this.folderName;
-          institution.errorOnRead = false;
-          institution.errorOnUpdate = false;
-          await imapUseCase.handle(institution.mailboxes);
+          entity.mailboxes.searchDate = entity.mailboxes.lastDateRead;
+          entity.mailboxes.folderName = this.folderName;
+          entity.errorOnRead = false;
+          entity.errorOnUpdate = false;
+          entity.mailboxes.emailFlag = this.emailFlag;
+          entity.mailboxes.errorOnFlagSet = false;
+          entity.mailboxes.quantityNFEDownloaded = 0;
+          entity.mailboxes.quantityEmailRead = 0;
+          await imapUseCase.handle(entity.mailboxes);
         } catch (error) {
-          institution.errorOnRead = true;
+          entity.errorOnRead = true;
           continue;
         }
 
         try {
-          await this.repository.updateSincronizer(institution.id);
+          await this.repository.updateSincronizer(entity.id);
         } catch (error) {
-          institution.errorOnUpdate = true;
+          entity.errorOnUpdate = true;
           continue;
         }
       }
@@ -47,18 +53,21 @@ class SyncronizerUseCase {
   async sendEmailWithErrors(entities) {
     try {
       const entitiesWithError = entities.filter(
-        (entity) => entity.errorOnRead || entity.errorOnUpdate
+        (entity) =>
+          entity.errorOnRead ||
+          entity.errorOnUpdate ||
+          entity.mailboxes.errorOnFlagSet
       );
 
       if (entitiesWithError.length > 0) {
         let textEmail =
-          "id|email|errorOnRead|errorOnUpdate|lastDateRead|folderName";
+          "id|email|errorOnRead|errorOnUpdate|Seen/Deleted|folderName|lastDateRead";
         for (const institution of entitiesWithError) {
           textEmail +=
-            `\n${institution.id}|${institution.mailboxes.email}|${institution.errorOnRead}|${institution.errorOnUpdate}|` +
-            `${new Date(institution.mailboxes.lastDateRead).toISOString()}|${
-              institution.mailboxes.folderName
-            }`;
+            `\n${institution.id}|${institution.mailboxes.email}|${institution.errorOnRead}|${institution.errorOnUpdate}|${institution.mailboxes.errorOnFlagSet}|` +
+            `${institution.mailboxes.folderName}|${new Date(
+              institution.mailboxes.lastDateRead
+            ).toISOString()}`;
         }
         const email = new Email();
         await email.sendEmail(
