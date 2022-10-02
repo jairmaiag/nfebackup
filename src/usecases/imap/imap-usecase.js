@@ -53,6 +53,10 @@ export default class IMAPUseCase {
 
               emailsFetch.on("message", function (emailMessage, seqno) {
                 emailMessage.on("attributes", function (attrs) {
+                  /* The imap.addFlags() method is not working to all emails providers.
+                  So, we control if the email was flagged by the imap server or not.
+                  If the email are already flagged, we ingnore it and return. */
+
                   /* Check if attrs.flags contains entityMailbox.emailFlag
                   if yes, then return and do not process this email further */
                   const emailFlag = entityMailbox.emailFlag.startsWith("\\")
