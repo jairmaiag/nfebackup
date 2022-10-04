@@ -42,7 +42,7 @@ export default class IMAPUseCase {
 
               if (results.length === 0) {
                 imap.end();
-                return;
+                return false;
               }
 
               entityMailbox.quantityEmailRead += results.length;
@@ -63,11 +63,11 @@ export default class IMAPUseCase {
                     ? entityMailbox.emailFlag
                     : `\\${entityMailbox.emailFlag}`;
                   if (attrs.flags.includes(emailFlag)) {
-                    return;
+                    return false;
                   }
                   const attachments = findAttachmentParts(attrs.struct);
                   if (attachments.length === 0) {
-                    return;
+                    return false;
                   }
                   entityMailbox.quantityNFEDownloaded += attachments.length;
 

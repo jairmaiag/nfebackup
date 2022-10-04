@@ -19,7 +19,7 @@ class SyncronizerUseCase {
 
       for (const entity of entities) {
         try {
-          console.log("entity.mailboxes.email", entity.mailboxes.email);
+          console.log("Lendo email: ", entity.mailboxes.email);
           entity.mailboxes.user = entity.mailboxes.email;
           /* "2022-09-07T03:00:00.000+00:00" */
           entity.mailboxes.searchDate = entity.mailboxes.lastDateRead;
@@ -31,7 +31,11 @@ class SyncronizerUseCase {
           entity.mailboxes.quantityNFEDownloaded = 0;
           entity.mailboxes.quantityEmailRead = 0;
           await imapUseCase.handle(entity.mailboxes);
+          if (entity.mailboxes.quantityNFEDownloaded == 0) {
+            continue;
+          }
         } catch (error) {
+          console.log("Erro lendo email: ", entity.mailboxes.email);
           entity.errorOnRead = true;
           continue;
         }
@@ -39,6 +43,7 @@ class SyncronizerUseCase {
         try {
           await this.repository.updateSincronizer(entity.id);
         } catch (error) {
+          console.log("Erro atualizando email: ", entity.mailboxes.email);
           entity.errorOnUpdate = true;
           continue;
         }
