@@ -22,43 +22,36 @@ model addresses {
 }
 
 model customers {
-  id                     Int                      @id(map: "customers_pk") @default(autoincrement())
-  corporateName          String                   @db.VarChar(250)
-  fantasyName            String                   @db.VarChar(250)
-  CNPJ                   String                   @unique @db.VarChar(14)
-  email01                String                   @db.VarChar(100)
-  DDI01                  String                   @db.VarChar(5)
-  DDD01                  String                   @db.VarChar(5)
-  phoneNumber01          String                   @db.VarChar(15)
-  DDI02                  String?                  @db.VarChar(5)
-  DDD02                  String?                  @db.VarChar(5)
-  phoneNumber02          String?                  @db.VarChar(15)
-  inactive               Boolean                  @default(false)
-  createdAt              DateTime                 @default(now()) @db.Timestamp(6)
-  updatedAt              DateTime?                @updatedAt @db.Timestamp(6)
-  mailboxId              Int
-  addressId              Int
-  addresses              addresses                @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_addresses_fk")
-  mailboxes              mailboxes                @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_mailboxes_fk")
-  institutions_customers institutions_customers[]
+  id            Int          @id(map: "customers_pk") @default(autoincrement())
+  corporateName String       @db.VarChar(250)
+  fantasyName   String       @db.VarChar(250)
+  CNPJ          String       @unique @db.VarChar(14)
+  email01       String       @db.VarChar(100)
+  DDI01         String       @db.VarChar(5)
+  DDD01         String       @db.VarChar(5)
+  phoneNumber01 String       @db.VarChar(15)
+  DDI02         String?      @db.VarChar(5)
+  DDD02         String?      @db.VarChar(5)
+  phoneNumber02 String?      @db.VarChar(15)
+  inactive      Boolean      @default(false)
+  createdAt     DateTime     @default(now()) @db.Timestamp(6)
+  updatedAt     DateTime?    @updatedAt @db.Timestamp(6)
+  mailboxId     Int
+  addressId     Int
+  institutionId Int
+  addresses     addresses    @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_addresses_fk")
+  mailboxes     mailboxes    @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_mailboxes_fk")
+  institutions  institutions @relation(fields: [institutionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "customers_institutions_fk")
 }
 
 model institutions {
-  id                     Int                      @id(map: "institutions_pk") @default(autoincrement())
-  name                   String                   @db.VarChar(250)
-  mailboxId              Int
-  addressId              Int
-  addresses              addresses                @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_addresses_fk")
-  mailboxes              mailboxes                @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_mailboxes_fk")
-  institutions_customers institutions_customers[]
-}
-
-model institutions_customers {
-  id            Int          @id(map: "institutions_customers_pk") @default(autoincrement())
-  institutionId Int
-  customerId    Int
-  customers     customers    @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_customers_customers_fk")
-  institutions  institutions @relation(fields: [institutionId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_customers_institutions_fk")
+  id        Int         @id(map: "institutions_pk") @default(autoincrement())
+  name      String      @db.VarChar(250)
+  mailboxId Int
+  addressId Int
+  addresses addresses   @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_addresses_fk")
+  mailboxes mailboxes   @relation(fields: [mailboxId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "institutions_mailboxes_fk")
+  customers customers[]
 }
 
 model mailboxes {

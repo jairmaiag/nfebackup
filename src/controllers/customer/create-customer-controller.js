@@ -4,7 +4,6 @@ const CreateCustomerController = (prismaClient) => {
   return async (request, response, next) => {
     try {
       const createCustomerUseCase = new CreateCustomerUseCase(prismaClient);
-      console.log("request.body", request.body);
       const newCustomer = await createCustomerUseCase.handle(request.body);
       if (newCustomer) {
         response.status(200).json({ status: "success" });

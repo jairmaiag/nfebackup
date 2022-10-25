@@ -21,6 +21,7 @@ class CustomerRepository {
         include: {
           mailboxes: true,
           addresses: true,
+          institutions: true,
         },
       };
     } else {
@@ -32,7 +33,7 @@ class CustomerRepository {
     return customer;
   }
 
-  async create(data, mailboxes, addresses, institutions_customers) {
+  async create(data, mailboxes, addresses, institutions) {
     const customer = await this.prismaClient.customers.create({
       data: {
         ...data,
@@ -42,8 +43,10 @@ class CustomerRepository {
         addresses: {
           create: addresses,
         },
-        institutions_customers: {
-          create: institutions_customers,
+        institutions: {
+          connect: {
+            id: institutions.institutionId,
+          },
         },
       },
     });
@@ -51,7 +54,7 @@ class CustomerRepository {
     return customer;
   }
 
-  async update(data, mailboxes, addresses) {
+  async update(data, mailboxes, addresses, institutions) {
     const customer = await this.prismaClient.customers.update({
       where: {
         CNPJ: data.CNPJ,
@@ -63,6 +66,11 @@ class CustomerRepository {
         },
         addresses: {
           update: addresses,
+        },
+        institutions: {
+          update: {
+            id: institutions.institutionId,
+          },
         },
       },
     });

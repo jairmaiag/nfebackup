@@ -11,7 +11,7 @@ class CreateCustomerUseCase {
     delete data.id;
     const mailboxes = requestBody.mailboxes;
     const addresses = requestBody.addresses;
-    const institutions_customers = requestBody.institutions_customers;
+    const institutions = requestBody.institutions;
 
     const customerRepository = new CustomerRepository(this.prismaClient);
 
@@ -25,7 +25,7 @@ class CreateCustomerUseCase {
       data,
       mailboxes,
       addresses,
-      institutions_customers
+      institutions
     );
 
     return newCustomer;

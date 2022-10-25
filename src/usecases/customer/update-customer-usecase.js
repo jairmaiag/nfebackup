@@ -11,6 +11,7 @@ class UpdateCustomerUseCase {
     delete data.id;
     const mailboxes = requestBody.mailboxes;
     const addresses = requestBody.addresses;
+    const institutions = requestBody.institutions;
 
     const customerRepository = new CustomerRepository(this.prismaClient);
 
@@ -23,7 +24,8 @@ class UpdateCustomerUseCase {
     const updatedCustomer = await customerRepository.update(
       data,
       mailboxes,
-      addresses
+      addresses,
+      institutions
     );
 
     return updatedCustomer;
